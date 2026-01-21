@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#f2f3f7;margin:0}
+.header{background:#222;color:#fff;padding:15px;text-align:center}
+.card{background:#fff;margin:10px;padding:12px;border-radius:10px}
+.btn{padding:10px;border:none;border-radius:6px;color:#fff;width:100%;margin-top:6px}
+.approve{background:#28a745}
+.reject{background:#d32f2f}
+input{width:100%;padding:8px;margin-top:6px}
+</style>
+</head>
+
+<body>
+<div class="header">👑 Admin Panel</div>
+
+<div class="card">
+<input id="uid" placeholder="User UID">
+<input id="amount" type="number" placeholder="Amount">
+<button class="btn approve" onclick="addBal()">➕ Add Balance</button>
+<button class="btn reject" onclick="ban()">🚫 Ban User</button>
+</div>
+
+<div class="card">
+<h3>⏳ Withdraw Requests</h3>
+<div id="list"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue, update }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyDBSUP7tfK5IlvEEoDm3qwkMhH6MU8Q3jE",
+ authDomain:"maniriyelbot0.firebaseapp.com",
+ databaseURL:"https://maniriyelbot0-default-rtdb.asia-southeast1.firebasedatabase.app",
+ projectId:"maniriyelbot0",
+ appId:"1:386824179846:web:e6eadd434a3151e48e0107"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+
+/* ADD BALANCE */
+window.addBal=()=>{
+ const u=uid.value;
+ const a=Number(amount.value);
+ update(ref(db,"users/"+u),{balance:a});
+};
+
+/* BAN USER */
+window.ban=()=>{
+ update(ref(db,"users/"+uid.value),{banned:true});
+};
+
+/* WITHDRAW LIST */
+onValue(ref(db,"withdraws"),snap=>{
+ list.innerHTML="";
+ snap.forEach(s=>{
+  const d=s.val();
+  if(d.status!=="pending")return;
+  list.innerHTML+=`
+   <div class="card">
+    👤 ${d.uid}<br>💰 ${d.amount}৳
+    <button class="btn approve" onclick="update(ref(db,'withdraws/${s.key}'),{status:'approved'})">Approve</button>
+   </div>`;
+ });
+});
+</script>
+</body>
+</html>
+
