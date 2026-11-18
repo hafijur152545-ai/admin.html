@@ -1,99 +1,1002 @@
 <!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<title>Admin Panel</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SUN9 - Movie Website</title>
 <style>
-body{font-family:Arial;background:#f2f3f7;margin:0}
-.header{background:#222;color:#fff;padding:15px;text-align:center;font-size:20px}
-.card{background:#fff;margin:10px;padding:12px;border-radius:10px}
-.btn{padding:10px;border:none;border-radius:6px;color:#fff;cursor:pointer;width:100%;margin-top:6px}
-.approve{background:#28a745}
-.reject{background:#d32f2f}
-.list{font-size:14px;margin-top:8px}
-</style>
-</head>
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:#0a0a0a;font-family:system-ui,-apple-system,"Noto Sans Bengali",Arial,sans-serif}
+button{font:inherit;cursor:pointer;border:0}
+input,select,textarea{font:inherit;width:100%}
 
+/* ========== SITE (public) ========== */
+#site{--bg:#0a0a0a;--bg2:#111;--card:#151515;--bd:#262626;--tx:#fff;--mut:#aaa;--ac:#FF6B00;--ac2:#ff9a3c;--onac:#fff;--rad:16px;--font:system-ui,-apple-system,"Noto Sans Bengali",Arial,sans-serif;
+ background:var(--bg);color:var(--tx);min-height:100vh;font-family:var(--font)}
+#site header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--bd)}
+.logo{font-size:26px;font-weight:900;color:var(--ac);user-select:none;-webkit-user-select:none;cursor:pointer;white-space:nowrap}.logo span{color:var(--tx)}
+#site header input{max-width:420px;padding:11px 14px;border-radius:999px;border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+.btn{background:var(--ac);color:var(--onac);padding:11px 18px;border-radius:calc(var(--rad) - 4px);font-weight:700}
+.btn.ghost{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.hero{margin:14px;border-radius:var(--rad);overflow:hidden;position:relative;min-height:340px;background:var(--card);display:flex;align-items:flex-end}
+.hero .slide{position:absolute;inset:0;display:flex;align-items:flex-end;opacity:0;transition:opacity .9s;pointer-events:none}.hero .slide.on{opacity:1;pointer-events:auto}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dots{position:absolute;right:14px;top:14px;display:flex;gap:6px;z-index:3}.dots i{width:8px;height:8px;border-radius:50%;background:#fff7;cursor:pointer;transition:.3s}.dots i.on{background:var(--ac);width:22px;border-radius:6px}
+.adlink{display:block;padding:14px;border-radius:12px;background:linear-gradient(90deg,var(--ac),var(--ac2));color:var(--onac);font-weight:800;text-decoration:none}.adone{margin:8px 0}
+.lockhead{display:flex;gap:12px;align-items:center;margin-bottom:6px}.lockhead img{width:64px;height:84px;object-fit:cover;border-radius:10px;flex:none}
+.empty{padding:40px 20px;text-align:center;color:var(--mut);grid-column:1/-1}
+.hero .ov{position:relative;padding:20px;background:linear-gradient(transparent,rgba(0,0,0,.95));width:100%;color:#fff}
+.hero h1{font-size:30px;margin:8px 0}
+.badge{background:var(--ac);color:var(--onac);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800;display:inline-block}
+.cats{display:flex;gap:8px;overflow:auto;padding:0 14px;scrollbar-width:none}
+.pill{padding:8px 15px;border-radius:20px;background:var(--card);border:1px solid var(--bd);cursor:pointer;white-space:nowrap;color:var(--tx)}
+.pill.active{background:var(--ac);color:var(--onac);border-color:var(--ac)}
+.sec{padding:16px 14px 0;font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:14px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}.hero{min-height:420px}}
+.card{background:var(--card);border-radius:var(--rad);overflow:hidden;cursor:pointer;border:1px solid var(--bd);transition:.2s;position:relative}
+.card:hover{transform:translateY(-3px);border-color:var(--ac);box-shadow:0 8px 28px color-mix(in srgb,var(--ac) 35%,transparent)}
+.thumb{position:relative}.thumb img{width:100%;height:220px;object-fit:cover;display:block}
+.dur{position:absolute;right:8px;top:8px;background:rgba(0,0,0,.8);color:#fff;padding:4px 9px;border-radius:20px;font-size:12px;font-weight:700}
+.card .p{padding:12px}.card .p b{display:block}
+.small{font-size:13px;color:var(--mut);line-height:1.6}
+.watch{color:var(--ac);font-size:13px;margin-top:6px;font-weight:700}
+.adbox{margin:14px;text-align:center;overflow:hidden;min-height:0}
+.adbox:empty{display:none}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:50;padding:16px;overflow:auto}
+.modal.open{display:flex}
+.box{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:calc(var(--rad) + 2px);padding:20px;width:100%;max-width:520px;max-height:92vh;overflow:auto}
+.lockico{font-size:42px;text-align:center}
+.bar{height:8px;background:var(--bg);border-radius:9px;overflow:hidden;margin:12px 0}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:.4s}
+.task{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--bg2);color:var(--tx);border:1px solid var(--bd);padding:13px;border-radius:12px;margin:8px 0;transition:.2s}
+.task .n{width:30px;height:30px;border-radius:50%;background:var(--ac);color:var(--onac);display:grid;place-items:center;font-weight:800;flex:none}
+.task .st{margin-left:auto;font-size:13px;font-weight:700;color:var(--ac);white-space:nowrap}
+.task.done{opacity:.6}.task.done .n{background:#16a34a;color:#fff}.task.done .st{color:#16a34a}
+.task.wait{opacity:.5;cursor:not-allowed}.task.wait .st{color:var(--mut)}
+.player{aspect-ratio:16/9;width:100%;border:0;border-radius:12px;background:#000;margin:10px 0}
+.clicktxt{background:var(--ac);color:var(--onac);padding:14px;border-radius:12px;margin:12px 0;font-weight:800;text-align:center}
+footer{padding:22px;text-align:center;color:var(--mut);font-size:13px}
+#devBtn{position:fixed;right:12px;bottom:12px;z-index:40;width:42px;height:42px;border-radius:50%;background:#000a;color:#fff;font-size:18px;display:none;backdrop-filter:blur(6px);border:1px solid #fff3}
+
+/* ----- THEME 2: Netflix Red (সারি-ওয়ালা স্ক্রল) ----- */
+#site.t2{--bg:#141414;--bg2:#0d0d0d;--card:#1f1f1f;--bd:#2b2b2b;--ac:#E50914;--ac2:#ff4d57;--rad:6px}
+.t2 header{background:linear-gradient(#000e,#0000);border:0;position:sticky}
+.t2 .logo{font-weight:900;letter-spacing:2px;text-transform:uppercase}
+.t2 .hero{margin:0;border-radius:0;min-height:460px}
+.t2 .hero h1{font-size:40px}
+.t2 .grid{display:flex;overflow-x:auto;gap:10px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.t2 .card{flex:0 0 150px;scroll-snap-align:start;border:0}
+.t2 .thumb img{height:210px}
+@media(min-width:700px){.t2 .card{flex-basis:200px}.t2 .thumb img{height:280px}}
+.t2 .card:hover{transform:scale(1.07);z-index:3}
+
+/* ----- THEME 3: Neon Cyber ----- */
+#site.t3{--bg:#05060f;--bg2:#080b1c;--card:#0b1030;--bd:#16307a;--ac:#00f0ff;--ac2:#ff2bd6;--onac:#001018;--rad:3px;--mut:#8fa3d6;--font:ui-monospace,"SF Mono",Menlo,Consolas,"Noto Sans Bengali",monospace;
+ background-image:linear-gradient(#0a1a4a33 1px,transparent 1px),linear-gradient(90deg,#0a1a4a33 1px,transparent 1px);background-size:34px 34px}
+.t3 .logo{text-shadow:0 0 12px var(--ac);text-transform:uppercase;letter-spacing:3px}
+.t3 .card,.t3 .hero,.t3 .box{clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));border-color:var(--ac)}
+.t3 .card{box-shadow:0 0 14px #00f0ff44 inset}
+.t3 .card:hover{box-shadow:0 0 26px #ff2bd699 inset;border-color:var(--ac2)}
+.t3 .badge{background:var(--ac2);color:#fff;border-radius:2px;text-transform:uppercase}
+.t3 .btn{box-shadow:0 0 16px var(--ac);text-transform:uppercase;letter-spacing:1px}
+.t3 .sec{color:var(--ac);text-shadow:0 0 10px var(--ac);text-transform:uppercase;letter-spacing:2px}
+.t3 .watch{color:var(--ac2)}
+
+/* ----- THEME 4: Glass Premium ----- */
+#site.t4{--bg:#140d2e;--bg2:#ffffff14;--card:#ffffff17;--bd:#ffffff2e;--ac:#a78bfa;--ac2:#38bdf8;--onac:#10062b;--rad:28px;--mut:#c7bfe6;
+ background:radial-gradient(circle at 15% 10%,#7c3aed66,transparent 45%),radial-gradient(circle at 90% 30%,#0ea5e966,transparent 45%),radial-gradient(circle at 40% 100%,#db277755,transparent 50%),#140d2e;background-attachment:fixed}
+.t4 header{background:#ffffff12;margin:10px;border-radius:999px;border:1px solid var(--bd)}
+.t4 .card,.t4 .box,.t4 .task{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.t4 .btn{background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:999px}
+.t4 .thumb{padding:10px 10px 0}.t4 .thumb img{border-radius:20px;height:200px}.t4 .dur{right:20px;top:20px}
+.t4 .hero{border:1px solid var(--bd)}
+
+/* ----- THEME 5: Golden Cinema (পোস্টার স্টাইল) ----- */
+#site.t5{--bg:#070605;--bg2:#0e0c08;--card:#0e0c08;--bd:#3a2f10;--ac:#d4af37;--ac2:#f3e2a0;--onac:#120d00;--rad:2px;--mut:#b7a878;--font:Georgia,"Noto Serif Bengali","Noto Sans Bengali",serif}
+.t5 header{justify-content:center;flex-wrap:wrap;border-bottom:1px solid var(--ac);padding:16px}
+.t5 .logo{letter-spacing:8px;text-transform:uppercase;font-weight:400;font-size:30px}
+.t5 header input{border-radius:2px;border-color:var(--bd)}
+.t5 .hero{min-height:380px;border:1px solid var(--ac);margin:18px}
+.t5 .hero h1{font-weight:400;letter-spacing:3px;text-transform:uppercase}
+.t5 .grid{grid-template-columns:repeat(2,1fr);gap:18px}
+@media(min-width:700px){.t5 .grid{grid-template-columns:repeat(4,1fr)}}
+.t5 .card{border:1px solid var(--bd)}
+.t5 .thumb img{height:auto;aspect-ratio:2/3}
+.t5 .card .p{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,#000e 40%);padding:30px 12px 12px;text-align:center}
+.t5 .card .p b{letter-spacing:1px;color:var(--ac2)}
+.t5 .btn{border-radius:2px;letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.t5 .sec{text-align:center;font-weight:400;letter-spacing:6px;text-transform:uppercase;color:var(--ac)}
+.t5 .pill{border-radius:2px}
+
+/* ----- THEME 6: Clean Light (লিস্ট স্টাইল) ----- */
+#site.t6{--bg:#f3f5fa;--bg2:#eef1f8;--card:#fff;--bd:#e2e6f0;--tx:#111827;--mut:#667085;--ac:#2563eb;--ac2:#60a5fa;--rad:14px}
+.t6 header{background:#fffe}
+.t6 .logo span{color:#111827}
+.t6 .hero{min-height:240px}
+.t6 .grid{grid-template-columns:1fr}
+@media(min-width:900px){.t6 .grid{grid-template-columns:repeat(2,1fr)}}
+.t6 .card{display:flex;align-items:stretch;box-shadow:0 2px 10px #1018280d}
+.t6 .thumb{flex:none;width:120px}.t6 .thumb img{height:100%;min-height:130px}
+.t6 .dur{left:6px;right:auto;top:6px;font-size:11px}
+.t6 .card .p{display:flex;flex-direction:column;justify-content:center}
+.t6 .card .p b{font-size:17px}
+.t6 .task,.t6 .box{box-shadow:0 2px 10px #10182814}
+
+/* ----- THEME 7: Sunset Aurora (চলন্ত গ্রেডিয়েন্ট) ----- */
+#site.t7{--bg:#1a0b1f;--bg2:#ffffff10;--card:#ffffff14;--bd:#ffffff2a;--ac:#ff5e7e;--ac2:#ffb347;--onac:#fff;--rad:22px;--mut:#f0cfdb;
+ background:linear-gradient(120deg,#2b0a3d,#7a1f5c,#d94a3a,#2b0a3d);background-size:300% 300%;animation:grad 16s ease infinite}
+.t7 .btn,.t7 .badge{background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:999px}
+.t7 header{background:#0003}
+.t7 .card,.t7 .box{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.t7 .sec::before{background:linear-gradient(var(--ac),var(--ac2))}
+
+/* ----- THEME 8: Emerald Night ----- */
+#site.t8{--bg:#04120d;--bg2:#08261b;--card:#0a1f17;--bd:#14412f;--ac:#10d98c;--ac2:#7cffcb;--onac:#02150d;--rad:20px;--mut:#8fc9b3;
+ background:radial-gradient(circle at 80% 0,#10d98c22,transparent 45%),radial-gradient(circle at 0 60%,#0ea5e922,transparent 40%),#04120d}
+.t8 .card{box-shadow:0 0 0 1px #10d98c18,0 10px 30px #0008}
+.t8 .card:hover{box-shadow:0 0 28px #10d98c66}
+.t8 .logo{text-shadow:0 0 18px #10d98c88}
+.t8 .thumb img{height:250px}
+.t8 .pill{border-radius:12px}
+
+/* ----- THEME 9: Pop Brutal (মোটা বর্ডার, কার্টুন স্টাইল) ----- */
+#site.t9{--bg:#fff3c4;--bg2:#fff;--card:#fff;--bd:#111;--tx:#111;--mut:#444;--ac:#ff3d71;--ac2:#ffd400;--onac:#fff;--rad:8px;--font:"Trebuchet MS",system-ui,"Noto Sans Bengali",sans-serif}
+.t9 header{background:#ffd400;border-bottom:3px solid #111}
+.t9 .logo span{color:#111}
+.t9 header input{border:3px solid #111;border-radius:10px}
+.t9 .card,.t9 .hero,.t9 .box,.t9 .task{border:3px solid #111;box-shadow:6px 6px 0 #111}
+.t9 .card:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 #111;border-color:#111}
+.t9 .btn{border:3px solid #111;box-shadow:4px 4px 0 #111;font-weight:900}.t9 .btn:active{transform:translate(3px,3px);box-shadow:none}
+.t9 .pill{border:2px solid #111}.t9 .pill.active{background:#ff3d71;border-color:#111}
+.t9 .sec{font-weight:900;text-transform:uppercase}.t9 .sec::before{background:#111}
+.t9 .badge{border:2px solid #111;background:#ffd400;color:#111}
+.t9 .thumb img{border-bottom:3px solid #111}
+
+/* ----- THEME 10: Ocean Deep (চওড়া সিনেমা কার্ড) ----- */
+#site.t10{--bg:#021a2b;--bg2:#052b42;--card:#ffffff0d;--bd:#22d3ee33;--ac:#22d3ee;--ac2:#3b82f6;--onac:#00202b;--rad:18px;--mut:#9cc7d9;
+ background:linear-gradient(180deg,#021a2b,#04415a 60%,#021a2b);background-size:100% 200%;animation:wave 12s ease-in-out infinite alternate}
+.t10 .grid{grid-template-columns:1fr}
+@media(min-width:700px){.t10 .grid{grid-template-columns:repeat(2,1fr)}}
+.t10 .thumb img{height:190px}
+.t10 .btn{background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.t10 .card{backdrop-filter:blur(8px)}
+.t10 .logo{text-shadow:0 0 16px #22d3ee88}
+
+/* ----- সব থিমে: ছোট অ্যানিমেশন ----- */
+.thumb{overflow:hidden}.thumb img{transition:transform .5s}
+.card:hover .thumb img{transform:scale(1.07)}
+.card{animation:up .55s backwards}
+.hero img{animation:kb 20s ease-in-out infinite alternate}
+.hero .ov>*{animation:up .7s backwards}
+.btn{transition:transform .15s,box-shadow .2s}.btn:active{transform:scale(.96)}
+.modal.open .box{animation:pop .3s}
+.sec{display:flex;align-items:center;gap:10px}.sec::before{content:"";width:5px;height:1.1em;border-radius:3px;background:var(--ac)}
+.t5 .sec,.t3 .sec{justify-content:center}
+.watch::after{content:" →";display:inline-block;transition:transform .2s}.card:hover .watch::after{transform:translateX(4px)}
+@keyframes up{from{opacity:0;transform:translateY(18px)}}
+@keyframes pop{from{opacity:0;transform:scale(.92)}}
+@keyframes kb{to{transform:scale(1.12)}}
+@keyframes grad{50%{background-position:100% 50%}}
+@keyframes wave{to{background-position:0 100%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+
+/* ----- অ্যাডমিনের দেওয়া থিম-ছবি ----- */
+#site.t6,#site.t9,#site.t13{--ov:rgba(255,255,255,.84)}
+#site.hasimg{background-image:linear-gradient(var(--ov,rgba(0,0,0,.78)),var(--ov,rgba(0,0,0,.78))),var(--bgimg);background-size:cover;background-position:center;background-attachment:fixed;animation:none}
+
+.hero h1{font-size:clamp(26px,6.5vw,46px);line-height:1.15}
+.shorts{display:flex;gap:12px;overflow-x:auto;padding:14px;scrollbar-width:none}
+.short{flex:0 0 138px;aspect-ratio:9/16;border-radius:var(--rad);overflow:hidden;position:relative;cursor:pointer;border:1px solid var(--bd);transition:.25s;animation:up .55s backwards;background:var(--card)}
+.short img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}.short:hover img{transform:scale(1.07)}.short:hover{transform:translateY(-4px);border-color:var(--ac)}
+.short .stt{position:absolute;left:0;right:0;bottom:0;padding:28px 10px 10px;background:linear-gradient(transparent,#000d);color:#fff;font-weight:700;font-size:13px}
+.short .dur{right:6px;top:6px;font-size:11px}
+@media(min-width:700px){.short{flex-basis:170px}}
+.wrap{max-width:920px;margin:0 auto;padding:14px}
+.back{margin-bottom:12px}
+.stage{position:relative;aspect-ratio:16/9;border-radius:var(--rad);overflow:hidden;background:#000;box-shadow:0 12px 40px #0006}
+.stage.vert{aspect-ratio:9/16;max-width:340px;margin:0 auto}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage.lock img{filter:brightness(.4) blur(2px);transform:scale(1.05)}
+.stage .ovl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:16px;color:#fff}
+.stage .lk{font-size:44px;animation:pop .5s}
+.stage .player{position:absolute;inset:0;width:100%;height:100%;margin:0;border-radius:0;aspect-ratio:auto}
+.winfo{margin-top:14px}.winfo h1{font-size:22px;line-height:1.3}
+.ucard{background:var(--card);border:1px solid var(--bd);border-radius:var(--rad);padding:16px;margin-top:14px}
+.t9 .ucard,.t9 .stage{border:3px solid #111;box-shadow:6px 6px 0 #111}
+.t3 .ucard{border-color:var(--ac)}
+footer .fb{font-size:20px;font-weight:900;color:var(--ac);margin-bottom:4px}
+
+.feat{display:flex;gap:8px;overflow-x:auto;padding:12px 14px 2px;scrollbar-width:none}
+.feat span{flex:none;font-size:12.5px;font-weight:700;padding:8px 13px;border-radius:999px;background:var(--card);border:1px solid var(--bd);color:var(--mut)}
+.rowcards{display:flex;gap:12px;overflow-x:auto;padding:12px 14px 6px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.rowcards .card{flex:0 0 150px;scroll-snap-align:start}.rowcards .thumb img{height:200px}
+@media(min-width:700px){.rowcards .card{flex-basis:190px}.rowcards .thumb img{height:250px}}
+.t5 .rowcards .card .p{position:absolute}
+.t6 .rowcards .card{display:block}.t6 .rowcards .thumb{width:auto}.t6 .rowcards .thumb img{height:200px}
+
+/* ----- নতুন: পড়তে সহজ লেখা, হিরো, সেকশন ----- */
+.hero{touch-action:pan-y}
+.hero .ov{background:linear-gradient(transparent,rgba(0,0,0,.6) 30%,rgba(0,0,0,.96));padding:46px 20px 22px}
+.hero h1{font-size:26px;line-height:1.2;letter-spacing:.2px;text-shadow:0 2px 12px #000;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:10px 0 8px}
+.hero .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.hero .meta span{font-size:13px;font-weight:700;color:#fff;background:#ffffff26;border:1px solid #ffffff40;border-radius:999px;padding:3px 11px;backdrop-filter:blur(6px)}
+.hero .hd{font-size:15px;line-height:1.55;color:#fff;text-shadow:0 1px 8px #000;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:14px;max-width:62ch}
+@media(min-width:700px){.hero h1{font-size:38px}.hero .hd{font-size:17px}}
+.hp{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--ac);z-index:4;box-shadow:0 0 10px var(--ac)}
+@keyframes hp{to{width:100%}}
+.cats{position:sticky;top:var(--hh,62px);z-index:15;padding:8px 14px;margin-top:2px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px)}
+.secw{padding-top:6px}
+.sec{font-size:21px;font-weight:800;letter-spacing:.2px}
+.cnt{margin-left:auto;font-size:12px;font-weight:700;color:var(--mut);background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:3px 11px}
+.card .p b{font-size:15.5px;line-height:1.35;font-weight:800}
+.card .p .small{font-size:13.5px;color:var(--mut);margin-top:3px}
+.small{color:var(--mut)}
+.shorts.wrapg{flex-wrap:wrap;overflow:visible}
+.t7 .card{background:rgba(20,6,30,.62)}.t4 .card{background:rgba(12,6,34,.62)}
+.t7 .card .p .small,.t4 .card .p .small{color:#eadcf3}
+
+/* ----- THEME 11: Synthwave ----- */
+#site.t11{--bg:#12002b;--bg2:#1c0042;--card:#240055cc;--bd:#ff2d9566;--ac:#ff2d95;--ac2:#00e5ff;--onac:#fff;--rad:12px;--mut:#d9b8ff;--font:"Trebuchet MS",system-ui,"Noto Sans Bengali",sans-serif;
+ background:linear-gradient(180deg,#12002b 0%,#2d0a5a 55%,#7a1a7a 85%,#ff2d95 130%);background-attachment:fixed}
+.t11 .logo{text-shadow:0 0 14px var(--ac),2px 2px 0 var(--ac2);font-style:italic}
+.t11 .card{box-shadow:0 0 0 1px #ff2d9544,0 8px 26px #0008}.t11 .card:hover{box-shadow:0 0 26px #ff2d95aa,0 0 0 1px var(--ac2)}
+.t11 .btn{background:linear-gradient(90deg,var(--ac),#b53dff);box-shadow:0 0 18px #ff2d9588;font-style:italic}
+.t11 .sec{text-shadow:0 0 12px var(--ac)}.t11 .sec::before{background:linear-gradient(var(--ac),var(--ac2))}
+.t11 header{border-bottom:1px solid var(--ac);box-shadow:0 4px 24px #ff2d9533}
+
+/* ----- THEME 12: Matrix ----- */
+#site.t12{--bg:#000;--bg2:#021a08;--card:#031a0a;--bd:#0b5a1f;--tx:#b8ffc9;--ac:#00ff41;--ac2:#7cffa0;--onac:#001a06;--rad:2px;--mut:#5fd47f;--font:ui-monospace,"SF Mono",Menlo,Consolas,"Noto Sans Bengali",monospace;
+ background-image:repeating-linear-gradient(0deg,#00ff410a 0 2px,transparent 2px 4px),radial-gradient(circle at 50% 0,#00ff4122,transparent 55%)}
+.t12 .logo{text-shadow:0 0 10px var(--ac);letter-spacing:3px}.t12 .logo span{color:var(--ac2)}
+.t12 .card,.t12 .hero,.t12 .box,.t12 .task{border:1px solid var(--ac)}
+.t12 .card:hover{box-shadow:0 0 22px #00ff4166}
+.t12 .btn{text-transform:uppercase;letter-spacing:1px;box-shadow:0 0 14px #00ff4166}
+.t12 .sec{text-transform:uppercase;letter-spacing:2px;color:var(--ac)}
+
+/* ----- THEME 13: Sakura Pastel ----- */
+#site.t13{--bg:#fff0f5;--bg2:#ffe3ee;--card:#fff;--bd:#ffd0e1;--tx:#4a2c3a;--mut:#8a5f73;--ac:#ff6fa3;--ac2:#ffb86b;--onac:#fff;--rad:26px;--font:"Segoe UI",system-ui,"Noto Sans Bengali",sans-serif;
+ background:radial-gradient(circle at 10% 0,#ffd6e8,transparent 40%),radial-gradient(circle at 100% 30%,#ffe9c9,transparent 40%),#fff0f5}
+.t13 .btn{background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:999px;box-shadow:0 6px 16px #ff6fa355}
+.t13 .card{box-shadow:0 8px 24px #ff6fa322}.t13 .card:hover{box-shadow:0 12px 30px #ff6fa355}
+.t13 header{background:#fffc}.t13 .logo span{color:#4a2c3a}
+.t13 .thumb{padding:10px 10px 0}.t13 .thumb img{border-radius:20px;height:210px}.t13 .dur{right:20px;top:20px}
+.t13 .pill{border-radius:999px}.t13 .box,.t13 .task{box-shadow:0 6px 20px #ff6fa322}
+
+/* ----- THEME 14: Royal Velvet ----- */
+#site.t14{--bg:#1a0510;--bg2:#2a0a1a;--card:#2a0a1a;--bd:#6b2a43;--ac:#c9a24b;--ac2:#f0d78c;--onac:#1a0510;--rad:12px;--mut:#d9b9a6;--font:Georgia,"Noto Serif Bengali","Noto Sans Bengali",serif;
+ background:radial-gradient(circle at 50% -10%,#7a1236aa,transparent 55%),linear-gradient(#1a0510,#10030a)}
+.t14 header{justify-content:center;border-bottom:1px solid var(--ac)}
+.t14 .logo{letter-spacing:6px;font-weight:400}
+.t14 .card,.t14 .hero,.t14 .box{border:1px solid #c9a24b66}.t14 .card:hover{box-shadow:0 0 24px #c9a24b55;border-color:var(--ac2)}
+.t14 .btn{background:linear-gradient(90deg,#b8902f,var(--ac2));letter-spacing:1px}
+.t14 .sec{letter-spacing:3px;text-transform:uppercase;color:var(--ac2);font-weight:600}
+.t14 .card .p b{color:var(--ac2)}
+
+#stickyAd{display:none;position:fixed;left:0;right:0;bottom:0;z-index:35;text-align:center;background:#000c;padding:4px 0;max-height:40vh;overflow:hidden}
+#midHost{margin:14px 0;text-align:center;overflow:hidden}
+
+.feat .lucky{cursor:pointer;color:var(--onac);background:linear-gradient(90deg,var(--ac),var(--ac2));border-color:transparent}
+/* ===== নতুন আপলোড: ঠিক ৩টা, এক সারিতে, কোনো ফাঁক নেই ===== */
+#site #newRow.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;overflow:visible;padding:12px 14px 6px;scroll-snap-type:none}
+#site #newRow.three .card{flex:none;width:auto;min-width:0;display:block}
+#site #newRow.three .thumb{width:auto}
+#site #newRow.three .thumb img{width:100%;height:auto;aspect-ratio:2/3;object-fit:cover}
+#site #newRow.three .dur{font-size:10px;padding:3px 7px;right:5px;top:5px}
+#site #newRow.three .card .p{padding:8px 7px}
+#site #newRow.three .card .p b{font-size:12px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#site #newRow.three .small{font-size:10.5px;line-height:1.4;margin-top:2px}
+#site #newRow.three .watch{font-size:11px;margin-top:4px}
+@media(min-width:700px){#site #newRow.three{gap:14px}#site #newRow.three .card .p b{font-size:15px}}
+/* ===== ওয়াচ পেজ Native Ad (আনলক বক্সের নিচে, ১৫ সেকেন্ড পর ৫ সেকেন্ড) ===== */
+.wadbox{max-height:0;opacity:0;overflow:hidden;margin:0;transition:max-height .6s ease,opacity .6s ease,margin .6s ease}
+.wadbox.on{max-height:900px;opacity:1;margin:14px 0}
+.wadbox .wadin{text-align:center;overflow:hidden;border-radius:14px}
+/* ===== নতুন আপলোড থাম্বেল সাজ ===== */
+#site #newRow.three .card{border-radius:16px;border:1px solid #ffffff22;background:linear-gradient(180deg,var(--card),#0006);box-shadow:0 8px 22px #0007;animation:popin .5s both}
+#site #newRow.three .card:nth-child(2){animation-delay:.08s}#site #newRow.three .card:nth-child(3){animation-delay:.16s}
+#site #newRow.three .thumb::after{content:"";position:absolute;left:0;right:0;bottom:0;height:45%;background:linear-gradient(transparent,#000c);pointer-events:none}
+#site #newRow.three .thumb::before{content:"🆕 NEW";position:absolute;left:5px;top:5px;z-index:2;font-size:9.5px;font-weight:900;letter-spacing:.5px;padding:3px 7px;border-radius:20px;background:linear-gradient(90deg,#f3e2a0,#d4af37);color:#201400;box-shadow:0 2px 8px #0008}
+#site #newRow.three .watch{display:inline-block;padding:4px 10px;border-radius:20px;background:linear-gradient(90deg,var(--ac),var(--ac2));color:var(--onac);font-size:11px}
+#site #newRow.three .card:hover{box-shadow:0 10px 28px color-mix(in srgb,var(--ac) 55%,transparent)}
+@keyframes popin{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+/* chips ক্লিক হবে */
+.feat span.fc{cursor:pointer;transition:.2s}.feat span.fc:active{transform:scale(.94)}.feat span.fc:hover{border-color:var(--ac);color:var(--tx)}
+/* ===== নতুন আপলোড: ৩টা মুভি + ৪র্থ স্বাগতম কার্ড ===== */
+#site #newRow.three{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#site #newRow.three .card .p b{font-size:13px}
+@media(min-width:700px){#site #newRow.three{grid-template-columns:repeat(4,minmax(0,1fr))}}
+#wcard{position:relative;border-radius:16px;overflow:hidden;min-height:250px;background:linear-gradient(160deg,#07070b,#1b1030 60%,#07070b);box-shadow:0 8px 22px #0007,0 0 0 1px #d4af3766;isolation:isolate;animation:popin .5s .24s both}
+#wcard::before{content:"";position:absolute;inset:0;border-radius:16px;padding:1.5px;background:linear-gradient(120deg,#f3e2a0,#d4af37 30%,#7c3aed 65%,#f3e2a0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:3;background-size:250% 100%;animation:goldmove 6s linear infinite}
+#wcard::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-90px;background:linear-gradient(100deg,transparent,#ffffff26,transparent);transform:skewX(-20deg);animation:sheen 4.5s ease-in-out infinite;pointer-events:none;z-index:2}
+#wcard .wc-l{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;text-align:center;transition:opacity .8s;background:radial-gradient(ellipse at 50% 0%,#4b2a8a66,transparent 70%)}
+#wcard .wc-b{opacity:0}#wcard.msg .wc-a{opacity:0}#wcard.msg .wc-b{opacity:1}
+#wcard .wci{font-size:38px;line-height:1;filter:drop-shadow(0 0 12px #d4af37aa);animation:bob 2.6s ease-in-out infinite}
+#wcard b{display:inline-block;font-size:12px;font-weight:800;color:#1a1100;padding:4px 13px;border-radius:999px;background:linear-gradient(90deg,#f3e2a0,#d4af37,#f3e2a0);box-shadow:0 3px 14px #d4af3766}
+#wcard .wcs{font-size:30px;font-weight:900;line-height:1.2;color:#fff;text-shadow:0 0 18px #d4af37aa,0 2px 0 #0008}
+#wcard .wcm{font-size:19px;font-weight:900;line-height:1.35;background:linear-gradient(90deg,#fff,#f3e2a0 50%,#d4af37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#wcard small{color:#e6dcff;font-size:11.5px;font-weight:600}
+/* মাঝের ঘরে স্বাগতম আর দেখাবে না — Ad থাকলে শুধু Ad-এর সময় খুলবে (Ad সিস্টেম আগের মতোই) */
+.rotslot .wl{display:none!important}
+.rotslot:not(.showad){max-height:0;margin:0 14px;opacity:0;box-shadow:none;pointer-events:none}
+.rotslot.showad{max-height:1500px;margin:16px 14px;opacity:1}
+.rotslot{transition:max-height .6s ease,margin .6s ease,opacity .6s ease}
+/* ===== নতুন আপলোড: আবার একটাই সারি (আগের মতো, সাইড-স্ক্রল) — ৩টা মুভি + ৪র্থ স্বাগতম ===== */
+#site #newRow.three{display:flex;grid-template-columns:none;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px 14px 6px;scrollbar-width:none}
+#site #newRow.three::-webkit-scrollbar{display:none}
+#site #newRow.three .card{flex:0 0 150px;scroll-snap-align:start}
+#site #newRow.three .thumb img{aspect-ratio:auto;height:200px}
+#site #newRow.three .card .p b{font-size:13px}
+#site #newRow.three #wcard{flex:0 0 150px;scroll-snap-align:start;min-height:0;align-self:stretch}
+@media(min-width:700px){#site #newRow.three{grid-template-columns:none}#site #newRow.three .card,#site #newRow.three #wcard{flex-basis:190px}#site #newRow.three .thumb img{height:250px}}
+@media(max-width:420px){#site #newRow.three .card,#site #newRow.three #wcard{flex-basis:138px}}
+/* ===== স্বাগতম কার্ড: ডানদিকের ফাঁকা জায়গা ভরে চওড়া, আরও প্রাইম ও স্টাইলিশ ===== */
+#site #newRow.three #wcard{flex:1 0 150px;min-width:150px;background:
+ radial-gradient(circle at 20% 18%,#fff 0 1px,transparent 2px),radial-gradient(circle at 82% 30%,#f3e2a0 0 1.4px,transparent 2.5px),radial-gradient(circle at 70% 82%,#fff 0 1px,transparent 2px),radial-gradient(circle at 15% 75%,#f3e2a0 0 1.3px,transparent 2.5px),radial-gradient(circle at 88% 12%,#fff 0 1px,transparent 2px),
+ linear-gradient(165deg,#0a0712,#24123f 55%,#08060e);box-shadow:0 10px 28px #000a,0 0 24px #d4af3733,0 0 0 1px #d4af3788}
+#wcard .wci{position:relative;display:grid;place-items:center;width:68px;height:68px;border-radius:50%;font-size:34px;background:radial-gradient(circle at 30% 25%,#4a2f85,#140a28);box-shadow:0 0 0 2px #d4af37,0 0 0 5px #d4af3730,0 0 26px #d4af3766;animation:none}
+#wcard .wci span{display:block;animation:bob 2.6s ease-in-out infinite}
+#wcard b{font-size:13px;padding:5px 16px;letter-spacing:.5px}
+#wcard .wcs{font-size:36px;font-weight:900;background:linear-gradient(180deg,#fff 20%,#f3e2a0 60%,#d4af37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 2px 10px #d4af3777);letter-spacing:.5px}
+#wcard .wcl{display:block;width:56%;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#d4af37,transparent);margin:2px 0 4px}
+#wcard .wcm{font-size:22px}
+#wcard small{font-size:12px;color:#f0e8ff}
+@media(min-width:700px){#site #newRow.three #wcard{flex-basis:190px}}
+/* ===== মাঝের প্রাইম স্বাগতম ঘর (Movie ও Natok-এর মাঝে) — ১০ সেকেন্ড স্বাগতম, ৫ সেকেন্ড Ad ===== */
+.rotslot{position:relative;margin:16px 14px;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#07070b,#1b1030 55%,#07070b);isolation:isolate;box-shadow:0 10px 30px #0009,0 0 0 1px #d4af3755}
+.rotslot::before{content:"";position:absolute;inset:0;border-radius:18px;padding:1.5px;background:linear-gradient(120deg,#f3e2a0,#d4af37 30%,#7c3aed 65%,#f3e2a0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:3;background-size:250% 100%;animation:goldmove 6s linear infinite}
+.rotslot .wl{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:18px 16px 16px;min-height:150px;text-align:center;transition:opacity .7s;z-index:1;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#4b2a8a66,transparent 65%)}
+.rotslot .wl::after{content:"";position:absolute;top:0;bottom:0;width:70px;left:-90px;background:linear-gradient(100deg,transparent,#ffffff26,transparent);transform:skewX(-20deg);animation:sheen 4.5s ease-in-out infinite;pointer-events:none}
+.rotslot .wl .wi{font-size:38px;line-height:1;margin-bottom:2px;filter:drop-shadow(0 0 12px #d4af37aa);animation:bob 2.6s ease-in-out infinite}
+.rotslot .wl b{display:inline-block;font-size:14px;letter-spacing:.6px;color:#1a1100;font-weight:800;padding:4px 16px;border-radius:999px;background:linear-gradient(90deg,#f3e2a0,#d4af37,#f3e2a0);box-shadow:0 3px 14px #d4af3766}
+.rotslot .wl .ws{font-size:38px;font-weight:900;line-height:1.25;margin-top:4px;color:#fff;text-shadow:0 0 18px #d4af37aa,0 2px 0 #0008}
+.rotslot .wl small{color:#e6dcff;font-size:13px;font-weight:600;letter-spacing:.3px;opacity:1}
+.rotslot .adl{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px;opacity:0;pointer-events:none;transition:opacity .7s;z-index:2;background:#07070b}
+.rotslot.showad .adl{position:relative;opacity:1;pointer-events:auto}
+.rotslot.showad .wl{position:absolute;left:0;right:0;top:0;opacity:0;pointer-events:none}
+.rotslot .adin{max-width:100%;overflow:hidden}
+@keyframes sheen{0%,55%{left:-80px}100%{left:110%}}
+@keyframes goldmove{to{background-position:250% 0}}
+@media(max-width:420px){.rotslot .wl{min-height:140px}.rotslot .wl .ws{font-size:34px}}
+@keyframes bob{50%{transform:translateY(-6px) scale(1.08)}}
+
+/* ========== ADMIN ========== */
+#admin{display:none;min-height:100vh;background:#0b0d12;color:#e8eaf0;font-family:system-ui,-apple-system,"Noto Sans Bengali",Arial,sans-serif;padding-bottom:60px}
+#admin.open{display:block}
+#admin .top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#11141c;border-bottom:1px solid #20242f}
+#admin .top h2{font-size:18px}
+#admin .mode{font-size:11px;padding:3px 9px;border-radius:20px;background:#16a34a22;color:#4ade80;margin-left:8px}
+#admin .mode.local{background:#f59e0b22;color:#fbbf24}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;position:sticky;top:0;background:#0b0d12ee;backdrop-filter:blur(8px);z-index:5;scrollbar-width:none}
+.tab{background:#171b25;color:#aab;padding:10px 16px;border-radius:12px;white-space:nowrap;font-weight:700;border:1px solid #232838;transition:.2s}
+.tab.active{background:linear-gradient(135deg,#ff6b00,#ff9a3c);color:#fff;border-color:transparent;box-shadow:0 4px 18px #ff6b0055}
+.pane{display:none;padding:4px 16px 16px;max-width:760px;margin:0 auto}.pane.active{display:block}
+.pane h3{margin:10px 0 4px;font-size:18px}
+.hint{font-size:13px;color:#8b93a7;line-height:1.6;margin:4px 0 12px}
+.acard{background:#12161f;border:1px solid #20242f;border-radius:16px;padding:14px;margin:12px 0}
+#admin label{display:block;font-size:13px;color:#aab2c5;margin:10px 0 2px;font-weight:600}
+#admin input,#admin select,#admin textarea{background:#0b0d12;color:#fff;border:1px solid #2a3040;border-radius:10px;padding:11px;margin:4px 0}
+#admin input:focus,#admin textarea:focus,#admin select:focus{outline:2px solid #ff6b0088;border-color:#ff6b00}
+.abtn{background:linear-gradient(135deg,#ff6b00,#ff9a3c);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700}
+.abtn.g{background:#1d2230;color:#dde;border:1px solid #2a3040}
+.abtn.red{background:#3a1218;color:#ff8b95;border:1px solid #5a1a24}
+.abtn.sm{padding:8px 12px;font-size:13px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mv{display:flex;gap:12px;align-items:center}
+.mv img{width:56px;height:76px;object-fit:cover;border-radius:8px;flex:none;background:#222}
+.mv .t{flex:1;min-width:0}.mv .t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv .t small{color:#8b93a7}
+.themes{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:560px){.themes{grid-template-columns:repeat(3,1fr)}}
+.th{cursor:pointer;background:#12161f;border:2px solid #232838;border-radius:16px;padding:10px;text-align:left;color:#e8eaf0;position:relative;transition:.2s}
+.th .sw{height:64px;border-radius:10px;display:flex;align-items:flex-end;gap:5px;padding:7px;margin-bottom:8px}
+.th .sw i{display:block;height:14px;flex:1;border-radius:4px}
+.th .up{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.th .up label{cursor:pointer}
+.th .no{position:absolute;top:6px;right:6px;background:#000a;color:#fff;font-weight:800;font-size:13px;border-radius:8px;padding:2px 9px}
+.th b{display:block;font-size:14px}.th small{color:#8b93a7;font-size:12px}
+.th.on{border-color:#ff6b00;background:#2a1500;box-shadow:0 0 22px #ff6b0044}
+.th.on::after{content:"✔ চালু আছে";position:absolute;left:10px;top:12px;background:#16a34a;color:#fff;font-size:11px;padding:2px 8px;border-radius:9px;font-weight:700}
+.sw-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0}
+.tg{position:relative;width:52px;height:30px;flex:none}
+.tg input{opacity:0;width:0;height:0;position:absolute}
+.tg i{position:absolute;inset:0;background:#2a3040;border-radius:30px;transition:.2s}
+.tg i::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+.tg input:checked+i{background:#16a34a}.tg input:checked+i::after{left:25px}
+.trow{display:grid;grid-template-columns:34px 1fr 38px;gap:8px;align-items:start;margin:10px 0}
+.trow .no{width:34px;height:34px;border-radius:50%;background:#ff6b00;color:#fff;display:grid;place-items:center;font-weight:800;margin-top:4px}
+.trow .x{background:#3a1218;color:#ff8b95;border-radius:10px;height:42px;margin-top:2px}
+.trow.off{opacity:.45}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);background:#16a34a;color:#fff;padding:12px 20px;border-radius:12px;font-weight:700;opacity:0;transition:.3s;z-index:99;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}#toast.err{background:#dc2626}
+#login{position:fixed;inset:0;background:#000d;display:none;align-items:center;justify-content:center;z-index:90;padding:16px}
+#login.open{display:flex}
+#login .lb{background:#12161f;border:1px solid #2a3040;border-radius:18px;padding:22px;width:100%;max-width:360px;color:#fff;font-family:inherit}
+#login input{background:#0b0d12;color:#fff;border:1px solid #2a3040;border-radius:10px;padding:12px;margin:12px 0}
+</style></head>
 <body>
-<div class="header">👑 Admin Panel</div>
 
-<div class="card">
-  <h3>Withdraw Requests</h3>
-  <div id="withdrawList">Loading...</div>
+<div id="site" class="t1">
+ <header>
+  <div class="logo" id="logoText" onclick="logoTap()">SUN<span>9</span></div>
+  <input id="search" placeholder="🔍 মুভি / নাটক খুঁজুন..." oninput="render()">
+ </header>
+ <div class="adbox" id="banner1"></div>
+ <div id="home">
+  <div class="hero" id="hero"></div>
+  <div class="cats" id="cats"></div>
+  <div class="feat" id="feat"><span class="lucky" onclick="luckyPick()">🎲 কী দেখব? একটা বেছে দিন</span><span class="fc" onclick="featNatok()">🎬 প্রতিদিন নতুন নাটক</span><span class="fc" onclick="featShorts()">📱 Shorts</span><span class="fc" onclick="featUnlock()">🔓 সহজ আনলক</span><span class="fc" onclick="featMobile()">📲 মোবাইল ফ্রেন্ডলি</span></div>
+  <div id="newWrap" style="display:none"><h2 class="sec">🆕 নতুন আপলোড</h2><div class="rowcards" id="newRow"></div></div>
+  <div id="secs"></div>
+ </div>
+ <div id="watch" style="display:none"></div>
+ <div id="stickyAd"></div>
+ <div class="adbox" id="banner2"></div>
+ <footer id="foot"></footer>
 </div>
+<button id="devBtn" onclick="openAdmin()" title="Admin">⚙️</button>
 
-<!-- 🔥 Firebase + Admin Logic -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue, update } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<!-- ADMIN LOGIN -->
+<div id="login"><div class="lb">
+ <h3>🔐 Admin Login</h3>
+ <p class="hint" id="loginHint">পাসওয়ার্ড দিন</p>
+ <input id="pw" type="password" placeholder="পাসওয়ার্ড" onkeydown="if(event.key==='Enter')doLogin()">
+ <div style="display:flex;gap:8px"><button class="abtn" style="flex:1" onclick="doLogin()">ঢুকুন</button><button class="abtn g" onclick="closeLogin()">বাতিল</button></div>
+</div></div>
 
-/* 🔧 Firebase Config (তোমারটাই) */
-const firebaseConfig = {
-  apiKey: "AIzaSyD5SUP7tfK5I1vEEoDm3qwkHM6MUQ3jE",
-  authDomain: "maniriye1bot0.firebaseapp.com",
-  databaseURL: "https://maniriye1bot0-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "maniriye1bot0",
-  storageBucket: "maniriye1bot0.appspot.com",
-  messagingSenderId: "386824179846",
-  appId: "1:386824179846:web:e6eadd434a3151e48e0107"
-};
+<!-- ADMIN PANEL -->
+<div id="admin">
+ <div class="top"><div style="display:flex;align-items:center"><h2>⚙️ SUN9 Admin</h2><span class="mode" id="modeTag"></span></div>
+  <div style="display:flex;gap:8px"><button class="abtn g sm" onclick="closeAdmin()">🏠 সাইট</button><button class="abtn red sm" onclick="logout()">Logout</button></div></div>
+ <div class="tabs" id="tabs"></div>
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+ <div class="pane" id="p-movies">
+  <h3>🎬 মুভি / নাটক</h3>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="abtn" onclick="addMovie('movie')">+ নতুন মুভি/নাটক</button><button class="abtn g" onclick="addMovie('short')">+ নতুন Short</button></div>
+  <div class="acard" id="editBox" style="display:none">
+   <h3 id="editTitle" style="margin:0 0 6px">Add / Edit</h3>
+   <input id="fTitle" placeholder="মুভি / নাটকের নাম">
+   <select id="fCat"><option>Action</option><option>Natok</option><option>Horror</option><option>Sci-Fi</option><option>Comedy</option><option>Thriller</option><option>Viral</option></select>
+   <label>⏱ সময় (কত ঘণ্টা, কত মিনিট)</label>
+   <div class="row2"><input id="fH" type="number" min="0" placeholder="ঘণ্টা (যেমন 1)"><input id="fM" type="number" min="0" max="59" placeholder="মিনিট (যেমন 45)"></div>
+   <label>🖼 থাম্বনেল ছবি (ফোন থেকে আপলোড)</label>
+   <input id="fFile" type="file" accept="image/*" onchange="mvPrev(this)">
+   <img id="fPrev" style="display:none;width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin:6px 0" alt="">
+   <input id="fVideo" placeholder="Video Link (YouTube / Facebook / Drive / .mp4) — আনলকের পর সাইটেই চলবে">
+   <textarea id="fClick" rows="2" placeholder="আনলকের পর কী লেখা আসবে? যেমন: Free - এখনই দেখুন"></textarea>
+   <textarea id="fDesc" rows="2" placeholder="ছোট Description"></textarea>
+   <div style="display:flex;gap:8px;margin-top:8px"><button class="abtn" onclick="saveMovie()">💾 Save</button><button class="abtn g" onclick="hideEdit()">Cancel</button></div>
+  </div>
+  <div id="movieList"></div>
+ </div>
 
-/* 🔐 ADMIN UID */
-const ADMIN_UID = "6560485203";
+ <div class="pane" id="p-themes">
+  <h3>🎨 থিম ম্যানেজার</h3>
+  <p class="hint">নম্বর ধরে থিম বাছুন — ক্লিক করলেই পুরো ওয়েবসাইটের ডিজাইন (রং, লেআউট, কার্ড, ফন্ট) সবার কাছে বদলে যাবে।</p>
+  <div class="acard">
+   <b>🖼 ছবি দিয়ে থিম বদলান</b>
+   <p class="hint">১) ছবি বাছুন  ২) কত নম্বর থিমে বসবে লিখুন  ৩) Save দিন। ঐ নম্বরের থিমের ব্যাকগ্রাউন্ড হয়ে যাবে।</p>
+   <input id="ptFile" type="file" accept="image/*" onchange="ptPrev(this)">
+   <img id="ptPrev" style="display:none;width:100%;max-height:160px;object-fit:cover;border-radius:12px;margin:6px 0" alt="">
+   <label id="ptLbl">থিম নম্বর</label><input id="ptNum" type="number" min="1" max="14" placeholder="যেমন 3">
+   <div class="sw-row"><span>Save করেই এই থিম চালু করুন</span><label class="tg"><input type="checkbox" id="ptOn" checked><i></i></label></div>
+   <button class="abtn" onclick="ptSave()">💾 ছবি Save করুন</button>
+  </div>
+  <div class="themes" id="themeList"></div>
+ </div>
 
-/* ✅ Telegram Check */
-const tg = Telegram.WebApp;
-const user = tg.initDataUnsafe?.user;
+ <div class="pane" id="p-unlock">
+  <h3>🔓 আনলক টাস্ক সিস্টেম</h3>
+  <p class="hint">দর্শক কোনো মুভি/নাটকে ক্লিক করলে এই টাস্কগুলো আসবে। একটা টাস্কে ক্লিক করলে লিংক খুলবে, আর নির্দিষ্ট সেকেন্ড পর্যন্ত বাকি টাস্ক বন্ধ থাকবে।</p>
+  <div class="acard">
+   <div class="row2">
+    <div><label>কয়টা টাস্ক দেখাবে</label><input id="uCount" type="number" min="1" max="10"></div>
+    <div><label>পরের টাস্ক খুলবে (সেকেন্ড পর)</label><input id="uGap" type="number" min="0" max="300"></div>
+   </div>
+   <label>আনলক কত ঘণ্টা থাকবে (0 = প্রতিবার টাস্ক করতে হবে)</label><input id="uHours" type="number" min="0" max="720">
+  </div>
+  <div class="acard"><b>টাস্কের লিংক কোথা থেকে আসে?</b>
+   <p class="hint">টাস্কের জন্য আলাদা লিংক দিতে হবে না। <b>Ads ট্যাবে</b> যত <b>Direct Link</b> ঘর চালু আছে, ওপর থেকে সেগুলোই টাস্ক হিসেবে আসবে। টাস্কে চাপলে ঐ Direct Link খুলবে।</p>
+   <div id="taskInfo" class="hint" style="color:#ffb27a"></div>
+   <button class="abtn g sm" onclick="showTab('ads')">💰 Ads ট্যাবে যান</button></div>
+  <button class="abtn" onclick="saveUnlock()">💾 Save করুন</button>
+ </div>
 
-if (!user || user.id.toString() !== ADMIN_UID) {
-  document.body.innerHTML =
-    "<h2 style='text-align:center;margin-top:50px'>⛔ Access Denied</h2>";
-  throw new Error("Not Admin");
+ <div class="pane" id="p-ads">
+  <h3>💰 Adsterra Ads</h3>
+  <p class="hint">Adsterra-র প্রতিটা ধরনের জন্য আলাদা ঘর। কোড (বা Direct Link) বসান, চালু/বন্ধ করুন, আর কোথায় দেখাবে বেছে নিন। দর্শক সাইটে ঢুকলেই চলবে (মুভিতে ক্লিক করলে নয়)।</p>
+  <div class="acard"><div class="sw-row"><span><b>সব Ads একসাথে চালু / বন্ধ</b></span><label class="tg"><input type="checkbox" id="adOn"><i></i></label></div></div>
+  <div class="acard"><b>🎯 স্বাগতম ↔ Ad ঘূর্ণন (Movie ও Natok-এর মাঝে)</b><p class="hint">"Movie ও Natok-এর মাঝে" জায়গা দেওয়া Ad এখানে আসবে। প্রথমে স্বাগতম দেখায়, এই সেকেন্ড পর Ad আসে, কিছুক্ষণ থেকে আবার স্বাগতম।</p><div class="row2"><div><label>স্বাগতম দেখাবে (সেকেন্ড)</label><input id="adW" type="number" min="1" max="120"></div><div><label>Ad দেখাবে (সেকেন্ড)</label><input id="adA" type="number" min="1" max="120"></div></div></div>
+  <div class="acard"><b>📌 Sticky Banner সময়</b><p class="hint">যে Banner-এর জায়গা "Sticky" দেবেন সেটা স্ক্রিনের নিচে ভাসবে, এই সেকেন্ড দেখিয়ে লুকাবে, আবার রিফ্রেশ হয়ে ফিরবে।</p><div class="row2"><div><label>কত সেকেন্ড দেখাবে</label><input id="adShow" type="number" min="1" max="120"></div><div><label>কত সেকেন্ড লুকিয়ে থাকবে</label><input id="adHide" type="number" min="1" max="120"></div></div></div>
+  <div id="adRows"></div>
+  <button class="abtn g sm" onclick="addAdRow()">+ নতুন Ad ঘর</button> <button class="abtn sm" onclick="addAdRow('direct')">+ Direct Link (টাস্কের জন্য)</button>
+  <div style="margin-top:14px"><button class="abtn" onclick="saveAds()">💾 Ads Save করুন</button></div>
+ </div>
+
+ <div class="pane" id="p-stats">
+  <h3>📊 ভিজিটর</h3>
+  <p class="hint">প্রতিদিন সকাল ৬:০০ টায় সব ০ হয়ে নতুন করে গণনা শুরু হয়। <b>ইউনিক ভিজিট</b> = একই ডিভাইস Settings-এ দেওয়া ঘণ্টার মধ্যে যতবারই আসুক ১ ভিজিট, ঐ সময় পর আবার এলে নতুন ১। <b>Ads ভিউ</b> = কতবার দর্শকের সামনে সাইট/ওয়াচ পেজ খুলে Ads এসেছে। আপনার নিজের ফোন গোনা হয় না।</p>
+  <div class="row2">
+   <div class="acard" style="text-align:center"><div class="hint" style="margin:0">আজকের ইউনিক ভিজিট</div><div id="stV" style="font-size:38px;font-weight:800;color:#ff9a3c">–</div></div>
+   <div class="acard" style="text-align:center"><div class="hint" style="margin:0">আজকের Ads ভিউ</div><div id="stP" style="font-size:38px;font-weight:800;color:#4ade80">–</div></div>
+  </div>
+  <div class="acard"><b>গত ৭ দিন</b><div id="stList" style="margin-top:8px"></div></div>
+  <button class="abtn g" onclick="loadStats()">🔄 Refresh</button>
+ </div>
+
+ <div class="pane" id="p-settings">
+  <h3>⚙️ Website Settings</h3>
+  <div class="acard">
+   <label>ওয়েবসাইটের নাম / লোগো</label><input id="siteName">
+   <label>ক্যাটাগরি লিস্ট (কমা দিয়ে লিখুন, যেমন: Movie,Natok)</label><input id="secName">
+   <p class="hint">🆕 নতুন আপলোড সারিতে সবসময় শেষ ৩টা মুভি/নাটক এক লাইনে দেখাবে।</p><div style="display:none"><input id="newCount" type="number"><input id="slotAfter" type="number"></div>
+   <label>স্বাগতম বার্তা (ফাঁকা রাখলে "স্বাগতম")</label><input id="welcomeTxt" placeholder="যেমন: স্বাগতম! নতুন নাটক দেখুন">
+   <label>ইউনিক ভিজিট গণনা: একই ডিভাইস কত ঘণ্টা পর আবার নতুন ভিজিট হবে</label><input id="visitHrs" type="number" min="1" max="24">
+   <div class="row2"><div><label>ওপরের স্লাইডারে কয়টা নতুন মুভি</label><input id="heroCount" type="number" min="1" max="10"></div><div><label>কত সেকেন্ড পর পর বদলাবে</label><input id="heroSec" type="number" min="1" max="30"></div></div>
+   <div class="sw-row"><span><b>Viral Natok Mode</b></span><label class="tg"><input type="checkbox" id="viralMode"><i></i></label></div>
+  </div>
+  <button class="abtn" onclick="saveSettings()">💾 Save</button>
+  <div class="acard"><b>সব মুভি মুছুন</b><p class="hint">সব মুভি/নাটক মুছে সাইট খালি হবে (থিম আর Ads থাকবে)।</p><button class="abtn red sm" onclick="resetData()">🗑 সব মুভি মুছুন</button></div>
+ </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ============ CONFIG ============
+ Firebase সেট না করলে সব সেটিং শুধু ঐ ফোনের ব্রাউজারে থাকে — অন্যরা দেখবে না।
+ সেটআপ গাইড: FIREBASE-SETUP.md দেখুন। */
+const CFG={apiKey:'AIzaSyCchZ1vngVCnr0uG0Uq8BcQORe2DFmdvAY',databaseURL:'https://sun9-analytics-default-rtdb.firebaseio.com',adminEmail:'admin@sun9.com'};
+const CLOUD=!!(CFG.apiKey&&CFG.databaseURL&&CFG.adminEmail);
+const LOCAL_HASH='d5108a344990b54f48ea7720374eacd83d4ea22d5d8735c7cece3542454fbe25'; // শুধু লোকাল মোডের জন্য
+
+const THEMES=[
+ {n:1,name:'Sun9 Orange',d:'ক্লাসিক গ্রিড',c:['#0a0a0a','#FF6B00','#ff9a3c']},
+ {n:2,name:'Netflix Red',d:'সারি-ওয়ালা স্ক্রল, বড় হিরো',c:['#141414','#E50914','#ff4d57']},
+ {n:3,name:'Neon Cyber',d:'নিয়ন গ্লো, কাটা কোণা',c:['#05060f','#00f0ff','#ff2bd6']},
+ {n:4,name:'Glass Premium',d:'গ্লাস ব্লার, গোলাকার',c:['#2a1060','#a78bfa','#38bdf8']},
+ {n:5,name:'Golden Cinema',d:'পোস্টার স্টাইল, সোনালি',c:['#070605','#d4af37','#f3e2a0']},
+ {n:6,name:'Clean Light',d:'সাদা ব্যাকগ্রাউন্ড, লিস্ট লেআউট',c:['#f3f5fa','#2563eb','#60a5fa']},
+ {n:7,name:'Sunset Aurora',d:'চলন্ত গ্রেডিয়েন্ট, গ্লাস কার্ড',c:['#7a1f5c','#ff5e7e','#ffb347']},
+ {n:8,name:'Emerald Night',d:'সবুজ গ্লো, বড় কার্ড',c:['#04120d','#10d98c','#7cffcb']},
+ {n:9,name:'Pop Brutal',d:'হলুদ, মোটা বর্ডার, কার্টুন স্টাইল',c:['#fff3c4','#ff3d71','#ffd400']},
+ {n:10,name:'Ocean Deep',d:'নীল সাগর, চওড়া সিনেমা কার্ড',c:['#021a2b','#22d3ee','#3b82f6']},
+ {n:11,name:'Synthwave',d:'রেট্রো নিয়ন সূর্যাস্ত, গোলাপি-নীল',c:['#1a0038','#ff2d95','#00e5ff']},
+ {n:12,name:'Matrix',d:'সবুজ টার্মিনাল, স্ক্যানলাইন',c:['#000','#00ff41','#7cffa0']},
+ {n:13,name:'Sakura Pastel',d:'হালকা গোলাপি, নরম গোল কার্ড',c:['#fff0f5','#ff6fa3','#ffb86b']},
+ {n:14,name:'Royal Velvet',d:'গাঢ় মেরুন ও সোনালি, রাজকীয়',c:['#1a0510','#c9a24b','#f0d78c']},
+];
+const CATS=['All','Action','Natok','Horror','Sci-Fi','Comedy','Thriller','Viral'];
+const DEF={
+ settings:{siteName:'SUN9',theme:1,viralMode:true,cats:'Movie,Natok',visitHours:5,newCount:3,slotAfter:0,welcome:'',heroSec:3,heroCount:5},
+ ads:{on:true,show:5,hide:5,wsec:10,asec:5,items:[{type:'popunder',label:'Popunder',pos:'global',code:'',on:true},{type:'social',label:'Social Bar',pos:'global',code:'',on:true},{type:'banner',label:'Banner (ওপরে)',pos:'top',code:'',on:true},{type:'banner',label:'Banner (নিচে)',pos:'watch',code:'',on:true},{type:'native',label:'Native Banner',pos:'middle',code:'',on:true},{type:'direct',label:'Direct Link 1',pos:'top',code:'',on:true},{type:'direct',label:'Direct Link 2',pos:'top',code:'',on:true},{type:'direct',label:'Direct Link 3',pos:'top',code:'',on:true}]},
+ unlock:{count:3,gap:10,hours:24,tasks:[{url:''},{url:''},{url:''}]},
+ movies:[]};
+
+const $=id=>document.getElementById(id);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const jget=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}};
+const jset=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const PLACE='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a2a3a"/><stop offset="1" stop-color="#14141c"/></linearGradient></defs><rect width="600" height="400" fill="url(#g)"/><text x="300" y="215" font-size="60" text-anchor="middle">🎬</text></svg>');
+const MOV=()=>S.movies.filter(m=>m.kind!=='short');
+const imgOf=m=>THUMB[m.id]||m.img||PLACE;
+const arr=x=>Array.isArray(x)?x.filter(Boolean):(x&&typeof x==='object'?Object.values(x).filter(Boolean):[]);
+
+let inApp=false, sess=new Set(), IMG={}, THUMB={}, mvThumb=null, sIdx=0, sTimer, heroSig='', S=clone(DEF), curCat='All', editing=null, cur=null, timer=null, tmpAds=[], adsDone=false;
+
+function norm(d){
+ const o=clone(DEF); d=d||{};
+ o.settings={...o.settings,...(d.settings||{})};
+ const ad=d.ads||{}; o.ads.on=ad.on!==false; o.ads.show=+ad.show||5; o.ads.hide=+ad.hide||5; o.ads.wsec=+ad.wsec||10; o.ads.asec=+ad.asec||5; o.ads.migNative=!!ad.migNative;
+ if(ad.items!==undefined) o.ads.items=arr(ad.items);
+ else if(ad.pop||ad.b1||ad.b2) o.ads.items=[{type:'popunder',label:'Popunder / Social Bar',pos:'global',code:ad.pop||'',on:true},{type:'banner',label:'Banner (ওপরে)',pos:'top',code:ad.b1||'',on:true},{type:'banner',label:'Banner (নিচে)',pos:'bottom',code:ad.b2||'',on:true}];
+ o.ads.migSwap=!!ad.migSwap; if(!o.ads.migSwap){ o.ads.items.forEach(a=>{ if(a.type!=='direct'&&a.type!=='popunder'&&a.type!=='social'&&['bottom','newrow','middle','watch'].includes(a.pos)) a.pos=(a.type==='native'?'middle':'watch'); }); o.ads.migSwap=true; o.ads.migWatch=true; } o.ads.migWatch=!!ad.migWatch||o.ads.migWatch; if(false){ o.ads.items.forEach(a=>{ if(a.type==='native'&&(a.pos==='bottom'||a.pos==='newrow'||a.pos==='middle')) a.pos='watch'; }); o.ads.migWatch=true; } o.ads.migNative=true; o.ads.items.forEach(a=>{ if(a.type!=='direct'&&(a.pos==='bottom'||a.pos==='newrow')) a.pos=(a.type==='native'?'middle':'watch'); }); // Native আগের জায়গা থেকে নতুন-আপলোড সারিতে (একবারই)
+ const u=d.unlock||{}; o.unlock={...o.unlock,...u};
+ // পুরনো টাস্ক-লিংক থাকলে সেগুলো Ads-এর Direct Link হয়ে যাবে
+ const lt=arr(u.tasks).filter(t=>t.url&&t.url.trim());
+ lt.forEach(t=>{ const c=t.url.trim(); if(!o.ads.items.some(x=>x.type==='direct'&&(x.code||'').trim()===c)){ o.ads.items=o.ads.items.filter(x=>!(x.type==='direct'&&!x.code)); o.ads.items.push({type:'direct',label:'Direct Link',pos:'top',code:c,on:t.on!==false}); } });
+ o.unlock.tasks=[];
+ if(d.movies!==undefined) o.movies=arr(d.movies).filter(m=>!(m.id>=1&&m.id<=6)); // পুরনো ডেমো মুভি বাদ
+ o.settings.theme=+o.settings.theme||1;
+ return o;
 }
 
-/* 📥 Withdraw Requests */
-const list = document.getElementById("withdrawList");
-const withdrawRef = ref(db, "withdraws");
+/* ============ PUBLIC SITE ============ */
+function applyTheme(){
+ const n=THEMES.some(t=>t.n==S.settings.theme)?+S.settings.theme:1, el=$('site');
+ el.className='t'+n;
+ if(IMG[n]){ el.style.setProperty('--bgimg','url("'+IMG[n]+'")'); el.classList.add('hasimg'); } else el.style.removeProperty('--bgimg');
+}
+const catList=()=>String(S.settings.cats||'Movie,Natok').split(',').map(x=>x.trim()).filter(Boolean);
+const catOf=m=>{ const L=catList(); return L.includes(m.cat)?m.cat:(L[0]||'Movie'); };
+const CAT_ICON={Movie:'🎬',Natok:'🎭'};
+function secHTML(title,n,inner){ return `<div class="secw"><h2 class="sec">${title}<small class="cnt">${n}</small></h2>${inner}</div>`; }
+function shortHTML(m,i=0){ return `<div class="short" style="animation-delay:${Math.min(i,8)*60}ms" onclick="openMovie(${m.id})"><span class="dur">⏱ ${esc(m.dur)}</span><img data-th="${m.id}" loading="lazy" src="${esc(imgOf(m))}" alt="" onerror="this.onerror=null;this.src=PLACE"><div class="stt">${esc(m.title)}</div></div>`; }
+function render(){
+ applyTheme();
+ const q=($('search').value||'').trim().toLowerCase(), L=catList(), shorts=S.movies.filter(m=>m.kind==='short');
+ if(curCat!=='All'&&curCat!=='Shorts'&&!L.includes(curCat)) curCat='All';
+ if(curCat==='Shorts'&&!shorts.length) curCat='All';
+ $('cats').innerHTML=['All',...L,...(shorts.length?['Shorts']:[])].map(c=>`<div class="pill ${c==curCat?'active':''}" onclick="setCat(this.dataset.c)" data-c="${esc(c)}">${c=='All'?'🏠 সব':c=='Shorts'?'📱 Shorts':(CAT_ICON[c]||'📺')+' '+esc(c)}</div>`).join('');
+ const hs=MOV().slice(0,Math.max(1,+S.settings.heroCount||5));
+ $('hero').style.display=hs.length?'flex':'none';
+ const sig=hs.map(h=>h.id+'|'+h.title+'|'+h.dur+'|'+h.desc).join()+S.settings.viralMode+S.settings.heroSec;
+ if(sig!==heroSig){ heroSig=sig; sIdx=0;
+  $('hero').innerHTML=hs.map((h,i)=>`<div class="slide ${i==0?'on':''}"><img data-th="${h.id}" src="${esc(imgOf(h))}" alt=""><div class="ov"><span class="badge">${i==0?'🆕 লেটেস্ট':(S.settings.viralMode!==false?'🔥 Viral':'⭐ Featured')}</span><h1>${esc(h.title)}</h1><div class="meta"><span>${esc(catOf(h))}</span><span>⏱ ${esc(h.dur)}</span></div>${h.desc?`<p class="hd">${esc(h.desc)}</p>`:''}<button class="btn" onclick="openMovie(${h.id})">▶️ এখনই দেখুন</button></div></div>`).join('')+(hs.length>1?`<div class="dots">${hs.map((_,i)=>`<i class="${i==0?'on':''}" onclick="goSlide(${i})"></i>`).join('')}</div><i class="hp"></i>`:'');
+  startSlider(); }
+ const match=m=>(m.title||'').toLowerCase().includes(q)||(m.cat||'').toLowerCase().includes(q);
+ const nl=MOV().slice(0,3), showNew=nl.length>=1&&curCat=='All'&&!q;
+ $('newWrap').style.display=showNew?'block':'none';
+ if(showNew){ $('newRow').classList.add('three'); $('newRow').innerHTML=nl.map(cardHTML).join('')+wcHTML(); updateWelcome(); updateWc(); } else $('newRow').innerHTML='';
+ $('feat').style.display=(curCat=='All'&&!q)?'flex':'none';
+ let html='';
+ if(q){ const r=S.movies.filter(match); html=secHTML('🔍 সার্চ ফলাফল',r.length,r.length?`<div class="grid">${r.map(cardHTML).join('')}</div>`:'<div class="empty">কিছু পাওয়া যায়নি</div>'); }
+ else if(curCat==='Shorts'){ html=secHTML('📱 Shorts',shorts.length,`<div class="shorts wrapg">${shorts.map(shortHTML).join('')}</div>`); }
+ else{
+  let ns=0; (curCat==='All'?L:[curCat]).forEach(c=>{ const a=MOV().filter(m=>catOf(m)===c); if(a.length){ html+=secHTML((CAT_ICON[c]||'📺')+' '+esc(c),a.length,`<div class="grid">${a.map(cardHTML).join('')}</div>`); if(++ns===1&&curCat==='All') html+='<div id="midSlot"></div>'; } });
+  if(curCat==='All'&&shorts.length) html+=secHTML('📱 Shorts',shorts.length,`<div class="shorts">${shorts.map(shortHTML).join('')}</div>`);
+  if(!html) html='<div class="empty">🎬 শীঘ্রই নতুন নাটক ও মুভি আসছে...</div>';
+ }
+ $('secs').innerHTML=html; placeMid();
+ const nm=(S.settings.siteName||'SUN9');
+ $('logoText').innerHTML=esc(nm.replace(/9$/,''))+(/9$/.test(nm)?'<span>9</span>':'');
+ $('foot').innerHTML='<div class="fb">'+esc(nm)+'</div><div>সেরা নাটক ও মুভি এক জায়গায় 🎬</div><div style="margin-top:8px;opacity:.7">© '+esc(nm)+' Movie Website · v3</div>';
+ document.title=nm+' - Movie Website';
+}
+function cardHTML(m,i=0){ return `<div class="card" style="animation-delay:${Math.min(i,10)*55}ms" onclick="openMovie(${m.id})"><div class="thumb"><span class="dur">⏱ ${esc(m.dur)}</span><img data-th="${m.id}" loading="lazy" src="${esc(imgOf(m))}" alt="" onerror="this.onerror=null;this.src=PLACE"></div><div class="p"><b>${esc(m.title)}</b><div class="small">${m.kind==='short'?'📱 Short':esc(catOf(m))} • ${esc(m.dur)}</div><div class="watch">▶️ দেখুন</div></div></div>`; }
+function setCat(c){curCat=c;render();}
+function goSlide(i){
+ const sl=document.querySelectorAll('#hero .slide'); if(!sl.length) return;
+ sIdx=((i%sl.length)+sl.length)%sl.length;
+ sl.forEach((e,k)=>e.classList.toggle('on',k==sIdx)); document.querySelectorAll('#hero .dots i').forEach((e,k)=>e.classList.toggle('on',k==sIdx));
+ startSlider();
+}
+function startSlider(){
+ clearInterval(sTimer); const n=document.querySelectorAll('#hero .slide').length, sec=Math.max(1,+S.settings.heroSec||3);
+ const hp=document.querySelector('#hero .hp'); if(hp){ hp.style.animation='none'; void hp.offsetWidth; hp.style.animation='hp '+sec+'s linear forwards'; }
+ if(n>1) sTimer=setInterval(()=>goSlide(sIdx+1),sec*1000);
+}
+(function(){ let x0=null,y0=0; const h=document.getElementById('hero');
+ h.addEventListener('touchstart',e=>{ x0=e.touches[0].clientX; y0=e.touches[0].clientY; clearInterval(sTimer); },{passive:true});
+ h.addEventListener('touchend',e=>{ if(x0===null) return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null; if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)) goSlide(sIdx+(dx<0?1:-1)); else startSlider(); },{passive:true});
+})();
+function paintOne(id){ document.querySelectorAll('img[data-th="'+id+'"]').forEach(i=>i.src=THUMB[id]); }
+async function loadThumbs(){
+ S.movies.forEach(m=>{ if(!THUMB[m.id]){ try{ const v=localStorage.getItem('sun9_th_'+m.id); if(v){ THUMB[m.id]=v; paintOne(m.id); } }catch(e){} } });
+ if(!CLOUD) return;
+ await Promise.all(S.movies.filter(m=>!THUMB[m.id]&&!m.img).map(async m=>{ try{ const v=await (await fetch(`${DB()}/thumbs/${m.id}.json`)).json(); if(typeof v==='string'){ THUMB[m.id]=v; try{localStorage.setItem('sun9_th_'+m.id,v)}catch(e){} paintOne(m.id); } }catch(e){} }));
+}
+async function fbPutStr(path,val){
+ const tok=await fbToken(); const r=await fetch(`${DB()}/${path}.json?auth=${tok}`,{method:val?'PUT':'DELETE',body:val?JSON.stringify(val):undefined}); if(!r.ok) throw new Error(r.status);
+}
 
-onValue(withdrawRef, (snap) => {
-  list.innerHTML = "";
-  if (!snap.exists()) {
-    list.innerHTML = "<p>No requests</p>";
-    return;
+/* --- ads: দর্শক সাইটে ঢুকলে --- */
+function injectHTML(el,html){
+ el.innerHTML='';
+ const t=document.createElement('div'); t.innerHTML=html;
+ t.querySelectorAll('script').forEach(old=>{const s=document.createElement('script');[...old.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.text=old.text;old.replaceWith(s);});
+ while(t.firstChild) el.appendChild(t.firstChild);
+}
+let slotHost=null, slotAds=[], slotT;
+function greet(){ const h=new Date().getHours(); return h<5?'শুভ রাত্রি':h<12?'শুভ সকাল':h<15?'শুভ দুপুর':h<18?'শুভ বিকাল':h<20?'শুভ সন্ধ্যা':'শুভ রাত্রি'; }
+function makeSlot(){ slotHost=document.createElement('div'); slotHost.className='rotslot'; slotHost.innerHTML='<div class="wl"></div><div class="adl"></div>'; }
+function greetIco(){ const h=new Date().getHours(); return h<5?'🌙':h<12?'🌅':h<15?'☀️':h<18?'🌤️':h<20?'🌇':'🌙'; }
+function updateWelcome(){ if(!slotHost) return; const nm=S.settings.siteName||'SUN9', c=(S.settings.welcome||'').trim(); slotHost.querySelector('.wl').innerHTML=`<div class="wi">${greetIco()}</div><b>${esc(greet())}!</b><div class="ws">${esc(c||'স্বাগতম')}</div><small>${esc(nm)}-এর পক্ষ থেকে ❤️</small>`; }
+setInterval(()=>{ try{ updateWelcome(); updateWc(); }catch(e){} },60000);
+/* ===== ৪ নম্বর স্টাইলিশ স্বাগতম কার্ড (নতুন আপলোডের ৪র্থ থাম্বেল) ===== */
+let wcMsgOn=false;
+function wcHTML(){ return '<div id="wcard"><div class="wc-l wc-a"></div><div class="wc-l wc-b"></div></div>'; }
+function updateWc(){ const el=$('wcard'); if(!el) return; const nm=S.settings.siteName||'SUN9', c=(S.settings.welcome||'').trim();
+ el.querySelector('.wc-a').innerHTML=`<div class="wci"><span>${greetIco()}</span></div><b>${esc(greet())}!</b><div class="wcs">${esc(c||'স্বাগতম')}</div><i class="wcl"></i><small>${esc(nm)}-এর পক্ষ থেকে ❤️</small>`;
+ el.querySelector('.wc-b').innerHTML=`<div class="wci"><span>🍿</span></div><div class="wcm">পছন্দের মুভি ও নাটক দেখে নিন</div><small>প্রতিদিন নতুন নাটক • ${esc(nm)}</small>`;
+ el.classList.toggle('msg',wcMsgOn); }
+(function wcLoop(){ setTimeout(()=>{ wcMsgOn=true; const e=$('wcard'); if(e) e.classList.add('msg'); setTimeout(()=>{ wcMsgOn=false; const e2=$('wcard'); if(e2) e2.classList.remove('msg'); wcLoop(); },5000); },10000); })();
+function placeSlot(){ const sl=$('midSlot'); if(sl&&slotHost) sl.replaceWith(slotHost); }
+function fitSlot(){ const adl=slotHost&&slotHost.querySelector('.adl'); if(!adl) return; const w=(slotHost.clientWidth||300)-20; adl.querySelectorAll('.adin').forEach(e=>{ e.style.zoom=''; const sw=e.scrollWidth; if(sw>w) e.style.zoom=(w/sw).toFixed(3); }); }
+function startSlot(){
+ clearTimeout(slotT); slotHost.classList.remove('showad'); if(!slotAds.length) return;
+ const w=Math.max(1,+S.ads.wsec||10)*1000, a=Math.max(1,+S.ads.asec||5)*1000;
+ const loop=()=>{ slotHost.classList.remove('showad'); slotT=setTimeout(()=>{ slotHost.classList.add('showad'); fitSlot(); slotT=setTimeout(loop,a); },w); };
+ loop(); [700,2000,4500].forEach(t=>setTimeout(fitSlot,t));
+}
+function goSecs(){ const e=$('secs'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'}); }
+function featNatok(){ const L=catList(), c=L.find(x=>/natok|নাটক/i.test(x)); if(!c){ toast('🎭 নাটক শীঘ্রই আসছে'); return; } setCat(c); toast('🎭 শুধু '+c+' দেখাচ্ছে'); setTimeout(goSecs,150); }
+function featShorts(){ if(S.movies.some(m=>m.kind==='short')){ setCat('Shorts'); setTimeout(goSecs,150); } else toast('📱 Shorts শীঘ্রই আসছে'); }
+function featUnlock(){ toast('🔓 কোনো মুভিতে ক্লিক করে ৩টা সহজ টাস্ক করলেই ভিডিও আনলক!'); }
+function featMobile(){ toast('📲 সাইটটা মোবাইলের জন্যই বানানো — ফোনে সহজে চলে!'); }
+function luckyPick(){ const a=MOV(); if(a.length) openMovie(a[Math.floor(Math.random()*a.length)].id); }
+function adWrap(a){ const d=document.createElement('div'); d.className='adone'; const z=+a.size; if(z&&z<100) d.style.zoom=z/100; return d; }
+let midHost=null, stickyItems=[], stickyT;
+function runAds(){
+ if(adsDone) return; adsDone=true;
+ if(S.ads.on===false) return;
+ arr(S.ads.items).filter(a=>a.type!=='direct'&&a.on!==false&&a.code&&a.code.trim()).forEach(a=>{ try{
+  if(a.type==='popunder'){ popItems.push(a); return; } // Popunder থাম্বনেল-ক্লিকে চলবে না, আনলকের পর চলবে
+  if(a.pos==='sticky'){ stickyItems.push(a); return; }
+  let pos=a.pos; if(pos==='bottom'||pos==='newrow') pos=(a.type==='native'?'middle':'watch');
+  if(pos==='watch'){ watchAds.push(a); const d=document.createElement('div'); d.className='wadin'; watchHost.querySelector('.wadc').appendChild(d); injectHTML(d,a.code); return; }
+  if(pos==='middle'){ slotAds.push(a); const d=document.createElement('div'); d.className='adin'; slotHost.querySelector('.adl').appendChild(d); injectHTML(d,a.code); return; }
+  const d=adWrap(a);
+  (a.pos==='global'?document.body:(a.pos==='bottom'?$('banner2'):$('banner1'))).appendChild(d);
+  injectHTML(d,a.code);
+ }catch(e){ console.warn('ad error',e); } });
+ try{ startSticky(); }catch(e){} try{ startSlot(); }catch(e){} try{ startWatchAd(); }catch(e){}
+}
+let watchHost=null, watchAds=[], watchT;
+function makeWatchHost(){ watchHost=document.createElement('div'); watchHost.className='wadbox'; watchHost.innerHTML='<div class="wadc"></div>'; }
+function placeWatchAd(){ const sl=$('wadSlot'); if(sl&&watchHost) sl.replaceWith(watchHost); }
+function startWatchAd(){ // ওয়াচ পেজে: ১৫ সেকেন্ড লুকানো, ৫ সেকেন্ড দেখা, আবার...
+ clearTimeout(watchT); watchHost.classList.remove('on'); if(!watchAds.length) return;
+ const loop=()=>{ watchHost.classList.remove('on'); watchT=setTimeout(()=>{ watchHost.classList.add('on'); watchT=setTimeout(loop,5000); },15000); };
+ loop();
+}
+function placeMid(){ placeSlot(); }
+function startSticky(){
+ if(!stickyItems.length) return; const box=$('stickyAd');
+ const show=Math.max(1,+S.ads.show||5)*1000, hide=Math.max(1,+S.ads.hide||5)*1000;
+ const on=()=>{ box.innerHTML=''; stickyItems.forEach(a=>{ const d=adWrap(a); box.appendChild(d); injectHTML(d,a.code); }); box.style.display='block'; stickyT=setTimeout(off,show); };
+ const off=()=>{ box.style.display='none'; box.innerHTML=''; stickyT=setTimeout(on,hide); };
+ on();
+}
+let popItems=[], popDone=false;
+function runPop(){
+ if(popDone||!popItems.length||S.ads.on===false) return; popDone=true;
+ popItems.forEach(a=>{ const d=document.createElement('div'); d.className='adone'; document.body.appendChild(d); injectHTML(d,a.code); });
+}
+
+/* --- আনলক টাস্ক --- */
+function directLinks(){ return arr(S.ads.items).filter(a=>a.type==='direct'&&a.on!==false&&a.code&&a.code.trim()).map(a=>a.code.trim()); }
+function tasks(){ const L=directLinks(); if(!L.length) return []; const n=Math.max(1,+S.unlock.count||1); return Array.from({length:n},(_,i)=>({url:L[i%L.length]})); }
+function isUnlocked(id){ if(sess.has(id)) return true; const u=jget('sun9_unlocked',{}); return u[id]&&u[id]>Date.now(); }
+function markUnlocked(id){ sess.add(id); const h=+S.unlock.hours||0; if(!h) return; const u=jget('sun9_unlocked',{}); u[id]=Date.now()+h*3600e3; jset('sun9_unlocked',u); }
+function prog(id){ const p=jget('sun9_prog',{}); return p[id]||{done:[],until:0}; }
+function saveProg(id,v){ const p=jget('sun9_prog',{}); p[id]=v; jset('sun9_prog',p); }
+
+/* --- পেজ রাউটার: #m=ID = ওয়াচ পেজ --- */
+function openMovie(id){ inApp=true; location.hash='#m='+id; }
+function goHome(){ if(inApp){ inApp=false; history.back(); } else { history.replaceState(null,'',location.pathname+location.search); route(); } }
+function showHome(){ clearInterval(timer); cur=null; lastWatchCnt=null; $('watch').style.display='none'; $('home').style.display='block'; }
+function route(){
+ if(location.hash==='#admin') return;
+ const m=location.hash.match(/^#m=(\d+)/);
+ if(m&&S.movies.some(x=>x.id==m[1])){ cur=S.movies.find(x=>x.id==m[1]); $('home').style.display='none'; $('watch').style.display='block'; window.scrollTo(0,0); renderWatch(); if(lastWatchCnt!==cur.id){ lastWatchCnt=cur.id; adView(); } }
+ else showHome();
+}
+window.addEventListener('hashchange',()=>{ if(!$('admin').classList.contains('open')) route(); });
+
+function renderWatch(){
+ clearInterval(timer);
+ const m=cur, T=tasks(), open=!T.length||isUnlocked(m.id), vert=m.kind==='short';
+ const im=`<img data-th="${m.id}" src="${esc(imgOf(m))}" alt="">`;
+ let stage;
+ if(open){ const e=embed(m.video); stage=e?(e.startsWith('<a')?im+`<div class="ovl">${e}</div>`:e):im+`<div class="ovl"><b style="font-size:18px">${esc(m.click||'শীঘ্রই আসছে')}</b></div>`; }
+ else stage=im+`<div class="ovl"><div class="lk">🔒</div><b style="font-size:17px">Locked — Complete the Tasks</b><small>ভিডিও দেখতে নিচের টাস্কগুলো সম্পন্ন করুন</small></div>`;
+ const more=S.movies.filter(x=>x.id!=m.id);
+ $('watch').innerHTML=`<div class="wrap"><button class="btn ghost back" onclick="goHome()">← ফিরে যান</button>
+ <div class="stage ${vert?'vert':''} ${open?'':'lock'}">${stage}</div>
+ <div class="winfo"><h1>${esc(m.title)}</h1><div class="small">${vert?'📱 Short':esc(m.cat)} • ⏱ ${esc(m.dur)}</div>${m.desc?`<p class="small" style="margin-top:8px">${esc(m.desc)}</p>`:''}<div style="margin-top:10px"><button class="btn ghost" onclick="copyLink(${m.id})">📤 Share</button></div></div>
+ <div id="unlockBox"></div><div id="wadSlot"></div>
+ ${more.length?`<h2 class="sec" style="padding:22px 0 0">আরও দেখুন</h2><div class="grid" style="padding:14px 0">${more.map(cardHTML).join('')}</div>`:''}</div>`;
+ placeWatchAd(); if(open) setTimeout(()=>{ if(cur&&cur.id==m.id) runPop(); },800);
+ if(!open) buildLock(T); else if(T.length&&m.click) $('unlockBox').innerHTML=`<div class="ucard"><b>✅ আনলক হয়েছে</b><div class="clicktxt">${esc(m.click)}</div></div>`;
+}
+function buildLock(T){
+ $('unlockBox').innerHTML=`<div class="ucard"><div style="font-weight:800;font-size:18px">🔒 Unlock This Video</div><p class="small">ভিডিও দেখতে নিচের ${T.length} টি টাস্ক সম্পন্ন করুন। বাটনে চাপলে লিংক খুলবে।</p><div class="bar"><i id="pbar"></i></div><div class="small" id="pnum" style="margin-bottom:6px"></div>${T.map((t,i)=>`<button class="task" id="tk${i}" onclick="doTask(${i})"><span class="n">${i+1}</span><span>টাস্ক ${i+1}</span><span class="st" id="tks${i}"></span></button>`).join('')}<p class="small" style="margin-top:6px">একটা টাস্কের পর পরের টাস্ক ${+S.unlock.gap||0} সেকেন্ড পর খুলবে।</p></div>`;
+ tick(); timer=setInterval(tick,250);
+}
+function doTask(i){
+ const T=tasks(), p=prog(cur.id);
+ if(p.done.includes(i)||Date.now()<p.until) return;
+ window.open(T[i].url,'_blank','noopener');
+ p.done.push(i); p.until=Date.now()+(+S.unlock.gap||0)*1000; saveProg(cur.id,p); tick();
+}
+function tick(){
+ if(!cur||!$('pbar')) return;
+ const T=tasks(), p=prog(cur.id), left=Math.ceil((p.until-Date.now())/1000), all=p.done.length>=T.length;
+ T.forEach((t,i)=>{ const b=$('tk'+i), s=$('tks'+i); if(!b) return; const d=p.done.includes(i); b.className='task'+(d?' done':(left>0?' wait':'')); s.textContent=d?'✅ সম্পন্ন':(left>0?'⏳ '+left+' সেকেন্ড':'VISIT →'); });
+ $('pbar').style.width=(p.done.length/T.length*100)+'%';
+ $('pnum').textContent=all?(left>0?'🎉 আনলক হচ্ছে... '+left+' সেকেন্ড':'আনলক!'):(p.done.length+' / '+T.length+' টাস্ক সম্পন্ন');
+ if(all&&left<=0){ clearInterval(timer); saveProg(cur.id,{done:[],until:0}); markUnlocked(cur.id); renderWatch(); }
+}
+function embed(u){
+ u=(u||'').trim(); if(!u) return '';
+ let m=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/); if(m) return `<iframe class="player" src="https://www.youtube.com/embed/${m[1]}" allowfullscreen></iframe>`;
+ m=u.match(/drive\.google\.com\/file\/d\/([\w-]+)/); if(m) return `<iframe class="player" src="https://drive.google.com/file/d/${m[1]}/preview" allowfullscreen></iframe>`;
+ if(/\.(mp4|webm)(\?|$)/i.test(u)) return `<video class="player" src="${esc(u)}" controls playsinline></video>`;
+ if(/facebook\.com|fb\.watch/i.test(u)) return `<iframe class="player" src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(u)}&show_text=false" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+ return `<a class="btn" style="display:block;text-align:center;text-decoration:none;margin:10px 0" href="${esc(u)}" target="_blank" rel="noopener">▶️ এখনই দেখুন</a>`;
+}
+function movieLink(id){ return location.href.split('#')[0]+'#m='+id; }
+function copyLink(id){ const u=movieLink(id); if(navigator.clipboard) navigator.clipboard.writeText(u); toast('🔗 লিংক কপি হয়েছে — Facebook-এ দিন'); }
+function shareMovie(){ copyLink(cur.id); }
+
+/* ============ ADMIN ACCESS (শুধু আপনার ফোনে) ============ */
+let taps=0, tapT=0;
+function logoTap(){ const n=Date.now(); taps=(n-tapT<2500)?taps+1:1; tapT=n; if(taps>=5){taps=0;openAdmin();} }
+if(location.hash==='#admin') setTimeout(openAdmin,300);
+let auth=jget('sun9_auth',null);
+const devOK=()=>jget('sun9_dev',false);
+function syncDevBtn(){ $('devBtn').style.display=devOK()?'block':'none'; }
+
+function openAdmin(){ if(devOK()) enterAdmin(); else{ $('loginHint').textContent=CLOUD?'Admin পাসওয়ার্ড দিন':'পাসওয়ার্ড দিন (লোকাল মোড)'; $('pw').value=''; $('login').classList.add('open'); setTimeout(()=>$('pw').focus(),100); } }
+function closeLogin(){ $('login').classList.remove('open'); }
+async function doLogin(){
+ const pw=$('pw').value; if(!pw) return;
+ try{
+  if(CLOUD){ await fbLogin(pw); }
+  else{
+   const h=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pw)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+   if(h!==LOCAL_HASH) throw new Error('bad');
   }
+  jset('sun9_dev',true); syncDevBtn(); closeLogin(); enterAdmin();
+ }catch(e){ toast('❌ ভুল পাসওয়ার্ড',1); }
+}
+function logout(){ localStorage.removeItem('sun9_dev'); localStorage.removeItem('sun9_auth'); auth=null; syncDevBtn(); closeAdmin(); toast('Logout হয়েছে'); }
+async function enterAdmin(){
+ $('site').style.display='none'; $('devBtn').style.display='none'; $('admin').classList.add('open'); window.scrollTo(0,0);
+ $('modeTag').textContent=CLOUD?'☁️ Online সেভ':'📱 শুধু এই ফোনে'; $('modeTag').className='mode'+(CLOUD?'':' local');
+ THEMES.forEach(t=>{ const v=localStorage.getItem('sun9_timg_'+t.n); if(v) IMG[t.n]=v; });
+ renderAdmin(); showTab(jget('sun9_tab','movies'));
+ await loadImgs(true); renderThemes();
+}
+function closeAdmin(){ $('admin').classList.remove('open'); $('site').style.display=''; syncDevBtn(); render(); }
 
-  snap.forEach(child => {
-    const d = child.val();
-    if (d.status !== "pending") return;
+const TABS=[['movies','🎬 Movies & Shorts'],['themes','🎨 Themes'],['unlock','🔓 Unlock Tasks'],['ads','💰 Ads'],['stats','📊 Visitors'],['settings','⚙️ Settings']];
+function showTab(t){
+ jset('sun9_tab',t); if(t=='stats') loadStats();
+ TABS.forEach(([k])=>{ $('p-'+k).classList.toggle('active',k==t); });
+ $('tabs').innerHTML=TABS.map(([k,n])=>`<button class="tab ${k==t?'active':''}" onclick="showTab('${k}')">${n}</button>`).join('');
+}
 
-    list.innerHTML += `
-      <div class="list">
-        👤 UID: ${d.uid}<br>
-        💸 Amount: ${d.amount}৳<br>
-        📱 Number: ${d.number}<br>
-        <button class="btn approve" onclick="approve('${child.key}')">Approve</button>
-        <button class="btn reject" onclick="reject('${child.key}')">Reject</button>
-        <hr>
-      </div>
-    `;
-  });
-});
+/* ============ ADMIN: render ============ */
+function renderAdmin(){
+ $('movieList').innerHTML=S.movies.map(m=>`<div class="acard mv"><img src="${esc(imgOf(m))}" alt=""><div class="t"><b>${esc(m.title)}</b><small>${m.kind==='short'?'📱 Short':esc(catOf(m))} • ⏱ ${esc(m.dur)}</small></div><button class="abtn g sm" onclick="copyLink(${m.id})" title="লিংক কপি">🔗</button><button class="abtn sm" onclick="editMovie(${m.id})">Edit</button><button class="abtn red sm" onclick="delMovie(${m.id})">✕</button></div>`).join('')||'<p class="hint">কোনো মুভি নেই</p>';
+ renderThemes(); $('fCat').innerHTML=catList().map(c=>`<option>${esc(c)}</option>`).join(''); $('ptLbl').textContent='থিম নম্বর (1 থেকে '+THEMES.length+')'; $('ptNum').max=THEMES.length;
+ const u=S.unlock; $('uCount').value=u.count; $('uGap').value=u.gap; $('uHours').value=u.hours; renderTaskInfo();
+ $('adW').value=S.ads.wsec||10; $('adA').value=S.ads.asec||5; $('adShow').value=S.ads.show||5; $('adHide').value=S.ads.hide||5; $('adOn').checked=S.ads.on!==false; tmpAds=arr(S.ads.items).map(a=>({...a})); renderAdRows();
+ $('heroCount').value=S.settings.heroCount||5; $('heroSec').value=S.settings.heroSec||3;
+ $('siteName').value=S.settings.siteName||''; $('secName').value=S.settings.cats||'Movie,Natok'; $('visitHrs').value=S.settings.visitHours||5; $('newCount').value=S.settings.newCount||5; $('slotAfter').value=S.settings.slotAfter??2; $('welcomeTxt').value=S.settings.welcome||''; $('viralMode').checked=S.settings.viralMode!==false;
+}
+function renderThemes(){
+ $('themeList').innerHTML=THEMES.map(t=>`<div class="th ${S.settings.theme==t.n?'on':''}" onclick="setTheme(${t.n})"><span class="no">${t.n}</span><div class="sw" id="sw${t.n}" style="background:${t.c[0]}">${t.c.map(c=>`<i style="background:${c}"></i>`).join('')}</div><b>${t.name}</b><small>${t.d}</small><div class="up"><label class="abtn g sm" onclick="event.stopPropagation()">🖼 ছবি দিন<input type="file" accept="image/*" hidden onchange="upTheme(${t.n},this)"></label>${IMG[t.n]?`<button class="abtn red sm" onclick="event.stopPropagation();delImg(${t.n})">✕ ছবি</button>`:''}</div></div>`).join('');
+ THEMES.forEach(t=>{ if(IMG[t.n]){ const e=$('sw'+t.n); e.style.background='center/cover url("'+IMG[t.n]+'")'; } });
+}
+function shrink(file,mw){ return new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>{ let w=mw||1280,q=.72,out; for(let i=0;i<5;i++){ const k=Math.min(1,w/im.width), c=document.createElement('canvas'); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); c.getContext('2d').drawImage(im,0,0,c.width,c.height); out=c.toDataURL('image/jpeg',q); if(out.length<(mw?90000:380000)) break; w*=.78; q-=.07; } res(out); }; im.onerror=rej; im.src=URL.createObjectURL(file); }); }
+async function saveImg(n,val){
+ try{ if(val) localStorage.setItem('sun9_timg_'+n,val); else localStorage.removeItem('sun9_timg_'+n); }catch(e){}
+ if(!CLOUD) return;
+ const tok=await fbToken(); const r=await fetch(`${DB()}/themeimg/${n}.json?auth=${tok}`,{method:val?'PUT':'DELETE',body:val?JSON.stringify(val):undefined}); if(!r.ok) throw new Error(r.status);
+}
+async function upTheme(n,inp){
+ const f=inp.files[0]; if(!f) return;
+ try{ toast('⏳ ছবি আপলোড হচ্ছে...'); const v=await shrink(f); IMG[n]=v; await saveImg(n,v); renderThemes(); render(); toast('✅ থিম '+n+' এর ছবি সেভ হয়েছে'+(CLOUD?' ☁️':'')); }
+ catch(e){ delete IMG[n]; renderThemes(); toast('❌ ছবি সেভ হয়নি (Rules-এ themeimg যোগ করেছেন?)',1); }
+}
+let ptData=null;
+async function ptPrev(inp){ const f=inp.files[0]; if(!f) return; ptData=await shrink(f); const i=$('ptPrev'); i.src=ptData; i.style.display='block'; }
+async function ptSave(){
+ const n=+$('ptNum').value;
+ if(!ptData) return toast('আগে ছবি বাছুন',1);
+ if(!THEMES.some(t=>t.n==n)) return toast('থিম নম্বর 1 থেকে '+THEMES.length+' এর মধ্যে দিন',1);
+ try{
+  IMG[n]=ptData; await saveImg(n,ptData);
+  if($('ptOn').checked){ S.settings.theme=n; await persist('✅ থিম '+n+' এ ছবি বসেছে ও চালু হয়েছে'); } else toast('✅ থিম '+n+' এ ছবি সেভ হয়েছে');
+  ptData=null; $('ptFile').value=''; $('ptNum').value=''; $('ptPrev').style.display='none'; renderThemes(); render();
+ }catch(e){ delete IMG[n]; toast('❌ সেভ হয়নি (Rules-এ themeimg আছে?)',1); }
+}
+async function delImg(n){ try{ delete IMG[n]; await saveImg(n,null); renderThemes(); render(); toast('ছবি মুছে ফেলা হয়েছে'); }catch(e){ toast('❌ মোছা যায়নি',1); } }
+function setTheme(n){ S.settings.theme=n; renderThemes(); persist('🎨 থিম '+n+' চালু হয়েছে'); }
 
-window.approve = (id) => {
-  update(ref(db, "withdraws/"+id), { status: "approved" });
-  alert("Approved");
-};
+/* ============ ADMIN: actions ============ */
+let mvKind='movie';
+function addMovie(k){ mvKind=k||'movie'; editing=null; mvThumb=null; $('editTitle').textContent=mvKind=='short'?'নতুন 📱 Short ভিডিও':'নতুন মুভি / নাটক'; $('editBox').style.display='block'; ['fTitle','fH','fM','fVideo','fClick','fDesc','fFile'].forEach(i=>$(i).value=''); $('fPrev').style.display='none'; $('editBox').scrollIntoView({behavior:'smooth'}); }
+function editMovie(id){
+ const m=S.movies.find(x=>x.id==id); editing=id; mvKind=m.kind||'movie'; mvThumb=null; $('editTitle').textContent='Edit: '+m.title; $('editBox').style.display='block';
+ $('fTitle').value=m.title; $('fCat').value=catOf(m); $('fVideo').value=m.video||''; $('fClick').value=m.click||''; $('fDesc').value=m.desc||''; $('fFile').value='';
+ $('fPrev').src=imgOf(m); $('fPrev').style.display='block';
+ const h=(m.dur.match(/(\d+)\s*h/i)||[])[1]||'', mi=(m.dur.match(/(\d+)\s*(?:m|min)/i)||[])[1]||'';
+ $('fH').value=h; $('fM').value=mi; $('editBox').scrollIntoView({behavior:'smooth'});
+}
+function hideEdit(){ $('editBox').style.display='none'; }
+async function mvPrev(inp){ const f=inp.files[0]; if(!f) return; mvThumb=await shrink(f,640); $('fPrev').src=mvThumb; $('fPrev').style.display='block'; }
+async function saveMovie(){
+ if(!editing&&!mvThumb) return toast('আগে থাম্বনেল ছবি বাছুন',1);
+ const id=editing||Date.now(), h=+$('fH').value||0, mi=+$('fM').value||0;
+ const dur=h&&mi?`${h}h ${mi}m`:h?`${h}h`:`${mi||45} min`;
+ const data={kind:mvKind,title:$('fTitle').value||'নতুন নাটক',cat:$('fCat').value,dur,video:$('fVideo').value.trim(),click:$('fClick').value||'এখনই দেখুন',desc:$('fDesc').value};
+ if(mvThumb){
+  try{ THUMB[id]=mvThumb; try{localStorage.setItem('sun9_th_'+id,mvThumb)}catch(e){} if(CLOUD) await fbPutStr('thumbs/'+id,mvThumb); }
+  catch(e){ delete THUMB[id]; return toast('❌ ছবি সেভ হয়নি (Rules-এ thumbs যোগ করেছেন?)',1); }
+ }
+ if(editing){ const i=S.movies.findIndex(x=>x.id==editing); S.movies[i]={...S.movies[i],...data}; } else { data.id=id; data.img=''; S.movies.unshift(data); }
+ mvThumb=null; hideEdit(); heroSig=''; renderAdmin(); persist('✅ মুভি সেভ হয়েছে');
+}
+async function delMovie(id){ if(confirm('মুছে ফেলবেন?')){ S.movies=S.movies.filter(m=>m.id!=id); delete THUMB[id]; try{localStorage.removeItem('sun9_th_'+id)}catch(e){} if(CLOUD) fbPutStr('thumbs/'+id,null).catch(()=>{}); heroSig=''; renderAdmin(); persist('মুছে ফেলা হয়েছে'); } }
+function renderTaskInfo(){ const n=directLinks().length, c=Math.max(1,+S.unlock.count||1); $('taskInfo').textContent=n?`✅ এখন ${n} টা Direct Link চালু আছে। দর্শক ${c} টা টাস্ক দেখবে`+(n<c?` (লিংক কম হওয়ায় একই লিংক ঘুরে ঘুরে আসবে — ${c} টা আলাদা লিংক দিলে ভালো)`:'')+'।':'⚠️ কোনো Direct Link চালু নেই — তাই টাস্ক আসবে না, ভিডিও সরাসরি খুলবে।'; }
+function saveUnlock(){
+ S.unlock={count:Math.max(1,+$('uCount').value||1),gap:Math.max(0,+$('uGap').value||0),hours:Math.max(0,+$('uHours').value||0),tasks:[]};
+ renderTaskInfo(); persist('✅ আনলক সেটিং সেভ হয়েছে');
+}
+const AD_TYPES=[['popunder','Popunder'],['social','Social Bar'],['banner','Banner'],['native','Native Banner'],['direct','Direct Link'],['other','অন্য কোড']];
+const POS=[['top','⬆️ ওপরে'],['middle','🎯 Movie ও Natok-এর মাঝে (Native Banner — স্বাগতম-এর সাথে ঘুরে ঘুরে)'],['watch','🎬 আনলক/ওয়াচ পেজে (চিকন Banner — ১৫ সেকেন্ড পর ৫ সেকেন্ড)'],['sticky','📌 Sticky (স্ক্রিনে ভাসমান, রিফ্রেশ হয়)'],['global','🌐 পুরো সাইটে (পেছনে চলে)']];
+const SIZES=[['100','আকার: স্বাভাবিক'],['80','আকার: ছোট (80%)'],['60','আকার: আরও ছোট (60%)']];
+function renderAdRows(){
+ $('adRows').innerHTML=tmpAds.map((a,i)=>`<div class="acard"><div class="sw-row"><b>${i+1}. ${esc(a.label||'Ad')}</b><label class="tg"><input type="checkbox" ${a.on!==false?'checked':''} onchange="tmpAds[${i}].on=this.checked"><i></i></label></div>
+ <select onchange="adType(${i},this.value)">${AD_TYPES.map(t=>`<option value="${t[0]}" ${a.type==t[0]?'selected':''}>${t[1]}</option>`).join('')}</select>
+ <input placeholder="নাম (শুধু আপনার জন্য)" value="${esc(a.label||'')}" oninput="tmpAds[${i}].label=this.value">
+ <textarea rows="3" placeholder="${a.type=='direct'?'https:// Direct Link':'Adsterra কোড (<script>...)'}" oninput="tmpAds[${i}].code=this.value">${esc(a.code||'')}</textarea>
+ ${a.type=='direct'?'<p class="hint" style="margin:4px 0">🔓 এই লিংকটা আনলক টাস্কে ব্যবহার হবে (সাইটে আলাদা করে দেখাবে না)</p>':`<select onchange="tmpAds[${i}].pos=this.value">${POS.map(p=>`<option value="${p[0]}" ${a.pos==p[0]?'selected':''}>${p[1]}</option>`).join('')}</select><select onchange="tmpAds[${i}].size=this.value">${SIZES.map(z=>`<option value="${z[0]}" ${(a.size||'100')==z[0]?'selected':''}>${z[1]}</option>`).join('')}</select>`}
+ <button class="abtn red sm" style="margin-top:6px" onclick="delAdRow(${i})">✕ এই ঘর মুছুন</button></div>`).join('');
+}
+function adType(i,v){ tmpAds[i].type=v; if(v=='popunder'||v=='social') tmpAds[i].pos='global'; else if(tmpAds[i].pos=='global') tmpAds[i].pos='bottom'; renderAdRows(); }
+function addAdRow(t){ tmpAds.push(t=='direct'?{type:'direct',label:'Direct Link '+(tmpAds.filter(a=>a.type=='direct').length+1),pos:'top',code:'',on:true}:{type:'banner',label:'নতুন Ad',pos:'bottom',code:'',on:true}); renderAdRows(); }
+function delAdRow(i){ tmpAds.splice(i,1); renderAdRows(); }
+function saveAds(){ S.ads={on:$('adOn').checked,migNative:true,migWatch:true,migSwap:true,wsec:Math.max(1,+$('adW').value||10),asec:Math.max(1,+$('adA').value||5),show:Math.max(1,+$('adShow').value||5),hide:Math.max(1,+$('adHide').value||5),items:tmpAds.map(a=>({...a,code:(a.code||'').trim()}))}; renderTaskInfo(); persist('✅ Ads সেভ হয়েছে — সাইট রিফ্রেশ করলে চালু হবে'); }
+function saveSettings(){ S.settings.siteName=$('siteName').value||'SUN9'; S.settings.cats=($('secName').value||'Movie,Natok'); S.settings.visitHours=Math.max(1,+$('visitHrs').value||5); S.settings.newCount=Math.max(1,+$('newCount').value||5); S.settings.slotAfter=Math.max(0,+$('slotAfter').value||0); S.settings.welcome=$('welcomeTxt').value.trim(); S.settings.viralMode=$('viralMode').checked; S.settings.heroCount=Math.max(1,+$('heroCount').value||5); S.settings.heroSec=Math.max(1,+$('heroSec').value||3); heroSig=''; persist('✅ Settings সেভ হয়েছে'); }
+function resetData(){ if(confirm('সব মুভি মুছে যাবে। নিশ্চিত?')){ S.movies.forEach(m=>{ if(CLOUD) fbPutStr('thumbs/'+m.id,null).catch(()=>{}); }); S.movies=[]; heroSig=''; renderAdmin(); persist('🗑 সব মুভি মুছে গেছে'); } }
 
-window.reject = (id) => {
-  update(ref(db, "withdraws/"+id), { status: "rejected" });
-  alert("Rejected");
-};
-</script>
+/* ============ SAVE / SYNC ============ */
+async function persist(msg){
+ jset('sun9_state',S); render();
+ if(!CLOUD){ toast(msg+' (শুধু এই ফোনে)'); return; }
+ try{ const tok=await fbToken(); const r=await fetch(`${CFG.databaseURL.replace(/\/$/,'')}/sun9.json?auth=${tok}`,{method:'PUT',body:JSON.stringify(S)}); if(!r.ok) throw new Error(r.status); toast(msg+' — সবার কাছে পৌঁছে গেছে ☁️'); }
+ catch(e){ toast('❌ Online সেভ হয়নি — আবার Login করুন',1); logout(); }
+}
+async function fbLogin(pw){
+ const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${CFG.apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:CFG.adminEmail,password:pw,returnSecureToken:true})});
+ const j=await r.json(); if(!r.ok) throw new Error('login');
+ auth={idToken:j.idToken,refreshToken:j.refreshToken,exp:Date.now()+(+j.expiresIn-120)*1000}; jset('sun9_auth',auth);
+}
+async function fbToken(){
+ if(!auth) throw new Error('noauth');
+ if(Date.now()>auth.exp){
+  const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${CFG.apiKey}`,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(auth.refreshToken)});
+  const j=await r.json(); if(!r.ok) throw new Error('refresh');
+  auth={idToken:j.id_token,refreshToken:j.refresh_token,exp:Date.now()+(+j.expires_in-120)*1000}; jset('sun9_auth',auth);
+ }
+ return auth.idToken;
+}
+async function loadCloud(){
+ if(!CLOUD) return;
+ try{ const r=await fetch(`${CFG.databaseURL.replace(/\/$/,'')}/sun9.json`); const j=await r.json(); if(j){ S=norm(j); jset('sun9_state',S); } }catch(e){}
+}
 
-</body>
-</html>
+const DB=()=>CFG.databaseURL.replace(/\/$/,'');
+const dayKey=(ms=Date.now())=>new Date(ms).toISOString().slice(0,10); // UTC দিন = বাংলাদেশে সকাল ৬টা থেকে ৬টা
+function inc(path){ fetch(DB()+path+'.json',{method:'PUT',body:JSON.stringify({'.sv':{increment:1}})}).catch(()=>{}); }
+function countVisit(){ // ইউনিক ভিজিট: একই ডিভাইস নির্দিষ্ট ঘণ্টার মধ্যে ১ বার
+ if(!CLOUD||devOK()) return;
+ const hrs=Math.max(1,+S.settings.visitHours||5), now=Date.now();
+ let last=0; try{ last=+localStorage.getItem('sun9_lastvisit')||0; }catch(e){}
+ if(now-last>=hrs*3600e3){ try{localStorage.setItem('sun9_lastvisit',String(now))}catch(e){} inc('/stats/'+dayKey()+'/visitors'); }
+}
+let lastWatchCnt=null;
+function adView(){ // Ads ভিউ: Ads আছে এমন পেজ দর্শকের সামনে খুললে ১
+ if(!CLOUD||devOK()||S.ads.on===false) return;
+ if(arr(S.ads.items).some(a=>a.type!=='direct'&&a.on!==false&&a.code&&a.code.trim())) inc('/stats/'+dayKey()+'/views');
+}
+async function loadStats(){
+ if(!CLOUD){ $('stList').textContent='Firebase সেট করা নেই'; return; }
+ try{
+  const tok=await fbToken(); const r=await fetch(DB()+'/stats.json?auth='+tok); if(!r.ok) throw 0; const j=(await r.json())||{};
+  const t=j[dayKey()]||{}; $('stV').textContent=t.visitors||0; $('stP').textContent=t.views||0;
+  let h=''; for(let i=0;i<7;i++){ const k=dayKey(Date.now()-i*864e5), v=j[k]||{}; h+=`<div class="sw-row" style="border-bottom:1px solid #20242f"><span>${i==0?'আজ':k}</span><span>👤 ${v.visitors||0} ভিজিট &nbsp; 👁 ${v.views||0} Ads ভিউ</span></div>`; }
+  $('stList').innerHTML=h;
+ }catch(e){ $('stList').textContent='লোড হয়নি — Rules চেক করুন বা আবার Login করুন'; }
+}
+
+async function loadImgs(all){
+ if(!CLOUD) return;
+ try{ if(all){ const j=(await (await fetch(DB()+'/themeimg.json')).json())||{}; THEMES.forEach(t=>{ if(j[t.n]) IMG[t.n]=j[t.n]; else delete IMG[t.n]; }); }
+  else{ const n=+S.settings.theme||1, v=await (await fetch(`${DB()}/themeimg/${n}.json`)).json(); if(typeof v==='string'){ IMG[n]=v; try{localStorage.setItem('sun9_timg_'+n,v)}catch(e){} } else { delete IMG[n]; try{localStorage.removeItem('sun9_timg_'+n)}catch(e){} } }
+ }catch(e){}
+}
+let tt;
+function toast(m,err){ const t=$('toast'); t.textContent=m; t.className='show'+(err?' err':''); clearTimeout(tt); tt=setTimeout(()=>t.className='',2600); }
+
+/* ============ START ============ */
+function setHH(){ const h=document.querySelector('#site header'); if(h) document.documentElement.style.setProperty('--hh',h.offsetHeight+'px'); }
+window.addEventListener('resize',setHH);
+(async function(){
+ const c=jget('sun9_state',null); if(c) S=norm(c);
+ { const n=+S.settings.theme||1; const v=localStorage.getItem('sun9_timg_'+n); if(v) IMG[n]=v; }
+ syncDevBtn(); makeSlot(); makeWatchHost(); render(); setHH(); loadThumbs();
+ await loadCloud(); await loadImgs(false); render(); runAds(); countVisit(); adView(); loadThumbs();
+ route();
+})();
+</script></body></html>
