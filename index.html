@@ -635,7 +635,7 @@ function render(){
  $('secs').innerHTML=html; placeMid();
  const nm=(S.settings.siteName||'SUN9');
  $('logoText').innerHTML=esc(nm.replace(/9$/,''))+(/9$/.test(nm)?'<span>9</span>':'');
- $('foot').innerHTML='<div class="fb">'+esc(nm)+'</div><div>সেরা নাটক ও মুভি এক জায়গায় 🎬</div><div style="margin-top:8px;opacity:.7">© '+esc(nm)+' Movie Website · v3</div>';
+ $('foot').innerHTML='<div class="fb">'+esc(nm)+'</div><div>সেরা নাটক ও মুভি এক জায়গায় 🎬</div><div style="margin-top:8px;opacity:.7">© '+esc(nm)+' Movie Website · v4</div>';
  document.title=nm+' - Movie Website';
 }
 function cardHTML(m,i=0){ return `<div class="card" style="animation-delay:${Math.min(i,10)*55}ms" onclick="openMovie(${m.id})"><div class="thumb"><span class="dur">⏱ ${esc(m.dur)}</span><img data-th="${m.id}" loading="lazy" src="${esc(imgOf(m))}" alt="" onerror="this.onerror=null;this.src=PLACE"></div><div class="p"><b>${esc(m.title)}</b><div class="small">${m.kind==='short'?'📱 Short':esc(catOf(m))} • ${esc(m.dur)}</div><div class="watch">▶️ দেখুন</div></div></div>`; }
